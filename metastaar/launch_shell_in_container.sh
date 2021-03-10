@@ -2,11 +2,7 @@
 
 # Builds Docker image for given version, then starts Bash from within image. Ideal for debugging the image.
 
-version=$1
-if [[ -z ${version} ]]; then
-    echo "Need to specify version (e.g. 1.2.5)."
-    exit
-fi
+version=0.0.1
 image=nitrogenase-metastaar:${version}
 echo "Building image ${image}."
 sudo docker build . -t ${image}

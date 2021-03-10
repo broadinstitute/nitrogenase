@@ -21,15 +21,24 @@ library(parallel)
 args <- commandArgs()
 
 pickArg <- function(option, args) {
-	iOption <- match(option, args)
-	if(iOption == nomatch) {
+	iOption <- match(option, args, nomatch=-1)
+	if(iOption == -1) {
 		stop(paste("Did not provide command line option ", option))
 	}
 	return(args[iOption + 1])
 }
 
+pickIntegerArg <- function(option, args) {
+	arg <- pickArg(option, args)
+	arg_as_int <- as.integer(arg)
+	if(is.na(arg_as_int)) {
+		stop(paste(option, " needs an integer value, but got ", arg))
+	}
+	return(arg_as_int)
+}
+
 chr <- pickArg("--chr", args)
-i <- pickArg("--i", args)
+i <- pickIntegerArg("--i", args)
 gds_file <- pickArg("--gds", args)
 null_model_file <- pickArg("--null-model", args)
 output_file <- pickArg("--out", args)
