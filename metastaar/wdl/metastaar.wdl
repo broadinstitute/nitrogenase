@@ -2,14 +2,14 @@ version 1.0
 
 struct ChromosomeSegments {
     String chromosome
+    File genotypes_file
     Int segs_from
-    Int segs_until
+    Int segs_to
 }
 
 workflow metastaar {
     input {
         File null_model_file
-        File genotypes_file
         Float covariances_maf_cutoff
         Array[ChromosomeSegments] chromosome_segments_list
         String output_file_prefix
@@ -17,12 +17,14 @@ workflow metastaar {
     }
     scatter(chromosome_segments in chromosome_segments_list) {
         String chromosome = chromosome_segments.chromosome
+        File genotypes_file = chromosome_segments.genotypes_file
         Int segs_from = chromosome_segments.segs_from
-        Int segs_until = chromosome_segments.segs_until
-        Int n_segs = segs_until - segs_from
-        String output_file_name = output_file_prefix + ".chr" + chromosome + "." + segment + "." + output_file_suffix
+        Int segs_to = chromosome_segments.segs_to
+        Int n_segs = segs_to + 1 - segs_from
         scatter(seg_offset in range(n_segs)) {
             Int segment = segs_from + seg_offset
+            String chrom_seg_part = ".chr" + chromosome + "." + segment + "."
+            String output_file_name = output_file_prefix + chrom_seg_part + output_file_suffix
             call calculate_summary_stats {
                 input:
                     chromosome = chromosome,
@@ -68,32 +70,6 @@ task calculate_summary_stats {
     output {
         File output_file = output_file_name
     }
-}
-
-task calculate_summary_stats {
-     input {
-         String chromosome
-         Int segment
-         File null_model_file
-         File genotypes_file
-         String output_file_name
-     }
-     runtime {
-         docker: "nitrogenase-metastaar:0.0.1"
-         cpu: 1
-         memory: "5 GB"
-         disks: "local-disk 20 HDD"
-     }
-     command <<<
-         set -e
-         echo "Now calculating summary statistics"
-         Rscript r/MetaSTAAR_Worker_Score_Generation.R --chr ~{chromosome}  --i ~{segment}  --gds ~{genotypes_file} \
-         --null-model ~{null_model_file}  --out ~{output_file_name}
-         echo "Done calculating summary statistics"
-     >>>
-     output {
-         File output_file = output_file_name
-     }
 }
 
 task calculate_covariances {

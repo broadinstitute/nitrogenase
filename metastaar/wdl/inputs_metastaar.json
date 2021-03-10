@@ -1,0 +1,15 @@
+{
+  "metastaar.null_model_file": "File",
+  "metastaar.covariances_maf_cutoff": 0.05,
+  "metastaar.chromosome_segments_list": [
+    {
+      "chromosome": "22",
+      "genotypes_file": "File",
+      "segs_from": 1,
+      "segs_to": 1
+    }
+  ],
+  "metastaar.output_file_prefix": "String",
+  "metastaar.output_file_suffix": "String"
+}
+
