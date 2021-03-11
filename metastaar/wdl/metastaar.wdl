@@ -12,9 +12,10 @@ workflow metastaar {
         File null_model_file
         Float covariances_maf_cutoff
         Array[ChromosomeSegments] chromosome_segments_list
-        String output_file_prefix
-        String output_file_suffix
+        String output_file_prefix_sum_stats
+        String output_file_prefix_cov
     }
+    String output_file_suffix = "Rdata"
     scatter(chromosome_segments in chromosome_segments_list) {
         String chromosome = chromosome_segments.chromosome
         File genotypes_file = chromosome_segments.genotypes_file
@@ -24,14 +25,15 @@ workflow metastaar {
         scatter(seg_offset in range(n_segs)) {
             Int segment = segs_from + seg_offset
             String chrom_seg_part = ".chr" + chromosome + "." + segment + "."
-            String output_file_name = output_file_prefix + chrom_seg_part + output_file_suffix
+            String output_file_name_score = output_file_prefix_sum_stats + chrom_seg_part + output_file_suffix
+            String output_file_name_cov = output_file_prefix_cov + chrom_seg_part + output_file_suffix
             call calculate_summary_stats {
                 input:
                     chromosome = chromosome,
                     segment = segment,
                     null_model_file = null_model_file,
                     genotypes_file = genotypes_file,
-                    output_file_name = output_file_name
+                    output_file_name = output_file_name_score
             }
             call calculate_covariances {
                 input:
@@ -40,7 +42,7 @@ workflow metastaar {
                     maf_cutoff = covariances_maf_cutoff,
                     null_model_file = null_model_file,
                     genotypes_file = genotypes_file,
-                    output_file_name = output_file_name
+                    output_file_name = output_file_name_cov
             }
         }
     }

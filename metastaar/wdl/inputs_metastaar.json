@@ -1,15 +1,15 @@
 {
-  "metastaar.null_model_file": "File",
+  "metastaar.null_model_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/Null_Model/obj.SMMAT.LDL.fulladj.sp.20190912.Rdata",
   "metastaar.covariances_maf_cutoff": 0.05,
   "metastaar.chromosome_segments_list": [
     {
       "chromosome": "22",
-      "genotypes_file": "File",
+      "genotypes_file": "gs://fc-secure-19d7e6e8-18bb-4649-9e66-b2ac84049a85/F8_aGDS/freeze.8.chr22.pass_and_fail.gtonly.minDP0.gds",
       "segs_from": 1,
       "segs_to": 1
     }
   ],
-  "metastaar.output_file_prefix": "String",
-  "metastaar.output_file_suffix": "String"
+  "metastaar.output_file_prefix_sum_stats": "summary_statistics",
+  "metastaar.output_file_prefix_cov": "covariances"
 }
 
