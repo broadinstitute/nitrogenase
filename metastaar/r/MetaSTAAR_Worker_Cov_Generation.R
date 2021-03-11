@@ -48,33 +48,13 @@ cov_maf_cutoff <- pickArg("--maf-cutoff", args)
 #                    Preparation Step
 ############################################################
 
-##### load Null model
-if(!dir.exists("/home/jupyter-user/notebooks/Null_Model"))
-{
-	system("mkdir /home/jupyter-user/notebooks/Null_Model")
-}
-
 nullobj <- get(load(null_model_file))
-
-###### open aGDS
-if(!dir.exists("/home/jupyter-user/notebooks/aGDS"))
-{
-	system("mkdir /home/jupyter-user/notebooks/aGDS")
-}
-
-### output folder
-if(!dir.exists("/home/jupyter-user/notebooks/Summary_Stat_Cov"))
-{
-	system("mkdir /home/jupyter-user/notebooks/Summary_Stat_Cov")
-}
-
 
 ######################################################
 #                 Main Step
 ######################################################
 ### gds file
-dir.geno <- "/home/jupyter-user/notebooks/aGDS"
-gds.path <- paste(dir.geno,"/freeze.8.chr",chr,".pass_and_fail.gtonly.minDP0.gds",sep="")
+gds.path <- gds_file
 genofile <- seqOpen(gds.path)
 
 ## get SNV id
@@ -211,7 +191,7 @@ try(GTSinvG_rare <- MetaSTAAR_worker_cov(genotype, obj_nullmodel = nullobj, cov_
 										 region_midpos, segment.size))
 
 ## save results
-save(GTSinvG_rare,file = output_file, compress = "xz")
+save(GTSinvG_rare, file = output_file, compress = "xz")
 
 seqResetFilter(genofile)
 

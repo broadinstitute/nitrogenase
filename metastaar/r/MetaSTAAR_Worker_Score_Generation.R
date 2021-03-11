@@ -54,7 +54,6 @@ nullobj <- get(load(null_model_file))
 ######################################################
 ### gds file
 
-dir.geno <- "/home/jupyter-user/notebooks/aGDS"
 gds.path <- gds_file
 genofile <- seqOpen(gds.path)
 
@@ -119,7 +118,7 @@ for(j in 1:subsegment_num)
 }
 
 ## save results
-save(summary_stat,file = out_file, compress = "xz")
+save(summary_stat, file = output_file, compress = "xz")
 
 seqResetFilter(genofile)
 
