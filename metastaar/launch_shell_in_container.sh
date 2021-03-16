@@ -2,7 +2,7 @@
 
 # Builds Docker image for given version, then starts Bash from within image. Ideal for debugging the image.
 
-version=1.0.0
+version=1.0.2
 image=nitrogenase-metastaar:${version}
 echo "Building image ${image}."
 sudo docker build . -t ${image}

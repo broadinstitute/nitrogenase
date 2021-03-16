@@ -17,6 +17,18 @@ library(parallel)
 #                     User Input
 ############################################################
 
+logType <- function(name, value) {
+	print(paste0(name, " (", typeof(value), ")"))
+}
+
+logValue <- function(name, value) {
+	print(paste0(name, " (", typeof(value), "): ", value))
+}
+
+logMessage <- function(message) {
+	print(message)
+}
+
 args <- commandArgs()
 
 pickArg <- function(option, args) {
@@ -48,6 +60,7 @@ output_file <- pickArg("--out", args)
 
 ##### load Null model
 nullobj <- get(load(null_model_file))
+logType("nullobj", nullobj)
 
 ######################################################
 #                 Main Step
@@ -56,6 +69,7 @@ nullobj <- get(load(null_model_file))
 
 gds.path <- gds_file
 genofile <- seqOpen(gds.path)
+logType("genofile", genofile)
 
 ## get SNV id
 filter <- seqGetData(genofile, "annotation/filter")
@@ -65,13 +79,16 @@ rm(filter,AVGDP)
 gc()
 
 variant.id <- seqGetData(genofile, "variant.id")
+logMessage(paste0("Length of variant.id intially: ", length(variant.id)))
 
 ## Position
 position <- as.integer(seqGetData(genofile, "position"))
 max_position <- max(position)
+logValue("max_position", max_position)
 
 segment.size <- 5e5
 segment.num <- ceiling(max_position/segment.size)
+logValue("segment.num", segment.num)
 
 ###  Generate Summary Stat Score
 print(paste0("Chromosome: ", chr, "; Segment: ", i))
@@ -87,6 +104,7 @@ for(j in 1:subsegment_num)
 
 	### phenotype id
 	phenotype.id <- as.character(nullobj$id_include)
+	logType("phenotype.id", phenotype.id)
 
 	is.in <- (SNVlist)&(position>=region_start_loc)&(position<=region_end_loc)
 	seqSetFilter(genofile,variant.id=variant.id[is.in],sample.id=phenotype.id)
@@ -106,6 +124,7 @@ for(j in 1:subsegment_num)
 	##### Filtering all variants
 	genotype <- seqGetData(genofile, "$dosage")
 	genotype <- genotype[id.genotype.match,,drop=FALSE]
+	logType("genotype", genotype)
 
 	if(!is.null(genotype))
 	{
@@ -118,6 +137,7 @@ for(j in 1:subsegment_num)
 }
 
 ## save results
+logType("summary_stat", summary_stat)
 save(summary_stat, file = output_file, compress = "xz")
 
 seqResetFilter(genofile)
