@@ -13,24 +13,25 @@ library(Matrix)
 library(dplyr)
 library(parallel)
 
-
 ############################################################
 #                     User Input
 ############################################################
 
+valueDebug <- function(value) {
+	if(length(value) < 2) {
+		valueString <- toString(value)
+	} else {
+		valueString <- ""
+	}
+	return(paste0(valueString, " typeof=", typeof(value), ", length=", length(value), ", is.atomic=", is.atomic(value),
+				  ", is.list=", is.list(value)))
+}
+
+logDebug <- function(name, value) {
+	print(paste0(name, " = ", valueDebug(value)))
+}
+
 args <- commandArgs()
-
-logType <- function(name, value) {
-	print(paste0(name, " (", typeof(value), ")"))
-}
-
-logValue <- function(name, value) {
-	print(paste0(name, " (", typeof(value), "): ", value))
-}
-
-logMessage <- function(message) {
-	print(message)
-}
 
 pickArg <- function(option, args) {
 	iOption <- match(option, args, nomatch=-1)
@@ -62,14 +63,14 @@ cov_maf_cutoff <- pickArg("--maf-cutoff", args)
 
 nullobj <- get(load(null_model_file))
 
-logType("nulloj", nullobj)
+logDebug("nulloj", nullobj)
 ######################################################
 #                 Main Step
 ######################################################
 ### gds file
 gds.path <- gds_file
 genofile <- seqOpen(gds.path)
-logType("genofile", genofile)
+logDebug("genofile", genofile)
 
 ## get SNV id
 filter <- seqGetData(genofile, "annotation/filter")
@@ -79,16 +80,16 @@ rm(filter,AVGDP)
 gc()
 
 variant.id <- seqGetData(genofile, "variant.id")
-logMessage(paste0("variant.id length: ", length(variant.id)))
+logDebug("variant.id", variant.id)
 
 ## Position
 position <- as.integer(seqGetData(genofile, "position"))
 max_position <- max(position)
-logValue("max_position", max_position)
+logDebug("max_position", max_position)
 
 segment.size <- 5e5
 segment.num <- ceiling(max_position/segment.size)
-logValue("segment.num", segment.num)
+logDebug("segment.num", segment.num)
 
 ### Generate Summary Stat Cov
 print(paste0("Chromosome: ", chr, "; Segment: ", i))
@@ -100,6 +101,7 @@ region_end_loc <- (i+1) * segment.size
 
 ### phenotype id
 phenotype.id <- as.character(nullobj$id_include)
+logDebug("phenotype.id", phenotype.id)
 
 is.in <- (SNVlist)&(position>=region_start_loc)&(position<=region_end_loc)
 variant_pos <- position[is.in]
@@ -107,6 +109,7 @@ seqSetFilter(genofile,variant.id=variant.id[is.in],sample.id=phenotype.id)
 
 ## genotype id
 id.genotype <- seqGetData(genofile,"sample.id")
+logDebug("id.genotype", id.genotype)
 
 id.genotype.merge <- data.frame(id.genotype,index=seq(1,length(id.genotype)))
 phenotype.id.merge <- data.frame(phenotype.id)
@@ -118,11 +121,11 @@ id.genotype.match <- phenotype.id.merge$index
 ########################################################
 
 variant.id.sub <- seqGetData(genofile, "variant.id")
-logMessage(paste0("variant.id.sub length: ", length(variant.id)))
+logDebug("variant.id.sub", variant.id.sub)
 ### number of variants in each subsequence
 MAF_sub_snv_num <- 5000
 MAF_sub_seq_num <- ceiling(length(variant.id.sub)/MAF_sub_snv_num)
-logValue("MAF_sub_seq_num", MAF_sub_seq_num)
+logDebug("MAF_sub_seq_num", MAF_sub_seq_num)
 
 genotype <- NULL
 
@@ -166,7 +169,7 @@ if(MAF_sub_seq_num > 0)
 	### Genotype
 	RV_sub_num <- 5000
 	RV_sub_seq_num <- ceiling(length(AF)/RV_sub_num)
-	logValue("RV_sub_seq_num", RV_sub_seq_num)
+	logDebug("RV_sub_seq_num", RV_sub_seq_num)
 
 	for(jj in 1:RV_sub_seq_num)
 	{
@@ -206,7 +209,7 @@ if(MAF_sub_seq_num > 0)
 	}
 }
 
-logType("genotype", genotype)
+logDebug("genotype", genotype)
 GTSinvG_rare <- NULL
 try(GTSinvG_rare <- MetaSTAAR_worker_cov(genotype, obj_nullmodel = nullobj, cov_maf_cutoff = cov_maf_cutoff, variant_pos,
 										 region_midpos, segment.size))
