@@ -57,9 +57,10 @@ task calculate_summary_stats {
         String output_file_name
     }
     runtime {
-        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.0.10"
+        preemptible: 3
+        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.1.0"
         cpu: 1
-        memory: "5 GB"
+        memory: "1 GB"
         disks: "local-disk 20 HDD"
     }
     command <<<
@@ -84,9 +85,10 @@ task calculate_covariances {
         String output_file_name
     }
     runtime {
-        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.0.10"
+        preemptible: 3
+        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.1.0"
         cpu: 1
-        memory: "5 GB"
+        memory: "1 GB"
         disks: "local-disk 20 HDD"
     }
     command <<<

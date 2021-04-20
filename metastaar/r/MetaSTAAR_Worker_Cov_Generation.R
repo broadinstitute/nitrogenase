@@ -226,8 +226,8 @@ if(MAF_sub_seq_num > 0)
 
 logDebug("genotype", genotype)
 GTSinvG_rare <- NULL
-try(GTSinvG_rare <- MetaSTAAR_worker_cov(genotype, obj_nullmodel = nullobj, cov_maf_cutoff = cov_maf_cutoff, variant_pos,
-										 region_midpos, segment.size))
+GTSinvG_rare <- MetaSTAAR_worker_cov(genotype, obj_nullmodel = nullobj, cov_maf_cutoff = cov_maf_cutoff, variant_pos,
+										 region_midpos, segment.size)
 
 ## save results
 save(GTSinvG_rare, file = output_file, compress = "xz")

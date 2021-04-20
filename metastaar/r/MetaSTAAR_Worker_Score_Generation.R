@@ -18,13 +18,28 @@ library(parallel)
 ############################################################
 
 valueDebug <- function(value) {
-	if(length(value) < 2) {
-		valueString <- toString(value)
+	if(is.null(value)) {
+		value_string <- "NULL"
+	} else if(is.atomic(value)) {
+		if(length(value) < 101) {
+			value_string <- paste0("[", paste0(value, collapse=", "), "]:", typeof(value))
+		} else {
+			value_string <- paste0("[", paste0(value[1:100], collapse=", "), ", ...]:", typeof(value))
+		}
+	} else if(is.list(value)) {
+		fun <- function (element) {
+			return(paste0(typeof(element), "[", length(element), "]"))
+		}
+		if(length(list) < 51) {
+			value_string <- paste0("[", paste0(sapply(value, fun), collapse=", "), "]: list[", length(value), "]")
+		} else {
+			value_string <-
+				paste0("[", paste0(sapply(value[1:50], fun), collapse=", "), ", ...]: list[", length(value), "]")
+		}
 	} else {
-		valueString <- ""
+		value_string <- paste0("??? (typeof=", typeof(value), ", length=", length(value), ")")
 	}
-	return(paste0(valueString, " typeof=", typeof(value), ", length=", length(value), ", is.atomic=", is.atomic(value),
-				  ", is.list=", is.list(value)))
+	return(value_string)
 }
 
 logDebug <- function(name, value) {
@@ -133,7 +148,7 @@ for(j in 1:subsegment_num)
 		variant_info <- data.frame(chr,pos,ref,alt)
 
 		results_temp <- NULL
-		try(results_temp <- MetaSTAAR_worker_sumstat(genotype,nullobj,variant_info))
+		results_temp <- MetaSTAAR_worker_sumstat(genotype,nullobj,variant_info)
 		summary_stat <- rbind(summary_stat,results_temp)
 	}
 }
