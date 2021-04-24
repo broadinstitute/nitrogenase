@@ -12,6 +12,7 @@ library(MetaSTAAR)
 library(Matrix)
 library(dplyr)
 library(parallel)
+library(arrow)
 
 ############################################################
 #                     User Input
@@ -48,12 +49,19 @@ logDebug <- function(name, value) {
 
 args <- commandArgs()
 
-pickArg <- function(option, args) {
+pickArg <- function(option, args, default=NULL) {
 	iOption <- match(option, args, nomatch=-1)
+	option <- NULL
 	if(iOption == -1) {
-		stop(paste("Did not provide command line option ", option))
+		if(is.null(default)) {
+			stop(paste("Did not provide command line option ", option))
+		} else {
+			option <- default
+		}
+	} else {
+		option <- args[iOption + 1]
 	}
-	return(args[iOption + 1])
+	return(option)
 }
 
 pickIntegerArg <- function(option, args) {
@@ -71,6 +79,12 @@ gds_file <- pickArg("--gds", args)
 null_model_file <- pickArg("--null-model", args)
 output_file <- pickArg("--out", args)
 cov_maf_cutoff <- pickArg("--maf-cutoff", args)
+output_format <- pickArg("--output-format", args, "rdata")
+
+if(!(output_format == "rdata" || output_format == "parquet")) {
+	stop(paste("Output format needs to be either 'rdata' or 'parquet', but got ", output_format))
+}
+
 
 ############################################################
 #                    Preparation Step
@@ -229,8 +243,73 @@ GTSinvG_rare <- NULL
 GTSinvG_rare <- MetaSTAAR_worker_cov(genotype, obj_nullmodel = nullobj, cov_maf_cutoff = cov_maf_cutoff, variant_pos,
 										 region_midpos, segment.size)
 
+# This function can be used to write out the sparse component of the MetaSTAAR covariant matrix.
+# It corresponds to the save(GTSinvG_rare,...) part of the script that writes out covariance.
+write_sparse_parquet <- function(mat, path) {
+	if (class(mat) != "dgCMatrix") {
+		stop("Error when writing matrix to sparse parquet: input matrix is not dgCMatrix")
+	}
+
+	# Now we have a matrix in dgCMatrix format, which is CSC (sparse column) format.
+	# However, parquet/arrow require equal length arrays. Triplet format (COO) works well
+	# for this. The `col_ind = ` line converts from the column pointer in CSC format to an
+	# array of column indices like what would be used in COO format.
+	row_ind <- mat@i
+	col_ind <- as.integer(rep(1:(length(mat@p) - 1), diff(mat@p)) - 1)
+
+	# Specify column types for parquet. We probably only need 32-bit float for the
+	# covariance values, but for now we'll stick with 64-bit.
+	sch <- arrow::schema(
+		row = uint32(),
+		col = uint32(),
+		value = float64(),
+	)
+
+	# Store the number of rows and columns for the sparse matrix into the
+	# parquet file metadata. This is needed when loading into C++ to know the
+	# matrix size without reading through the entire file.
+	sch <- sch$WithMetadata(list(
+		nrows = dim(mat)[1],
+		ncols = dim(mat)[2]
+	))
+
+	# Create an arrow table for writing to parquet.
+	tab <- Table$create(
+		row = row_ind,
+		col = col_ind,
+		value = mat@x,
+		schema = sch
+	)
+
+	# Write to parquet. Note if we specify 'chunk_size' = some number of rows, we can create
+	# row groups within the parquet files. This allows for running queries that only load certain
+	# groups, rather than the entire file.
+	#
+	# zstd compression gives a good balance between compression ratio, compression speed, and
+	# decompression speed. Columns are dictionary or RLE encoded automatically first.
+	comp <- arrow:::default_parquet_compression()
+	if (arrow::codec_is_available("zstd")) {
+		comp <- "zstd"
+	} else {
+		warning("zstd compression codec unavailable, trying default parquet compression instead (snappy)")
+	}
+
+	write_parquet(
+		tab,
+		path,
+		compression = comp,
+		write_statistics = T,
+		version = "2.0",
+		chunk_size = 20000000
+	)
+}
+
 ## save results
-save(GTSinvG_rare, file = output_file, compress = "xz")
+if(output_format == "parquet") {
+	write_sparse_parquet(GTSinvG_rare, output_file)
+} else {
+	save(GTSinvG_rare, file = output_file, compress = "xz")
+}
 
 seqResetFilter(genofile)
 

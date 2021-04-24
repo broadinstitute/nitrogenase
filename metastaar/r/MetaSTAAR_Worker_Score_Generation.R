@@ -12,6 +12,7 @@ library(MetaSTAAR)
 library(Matrix)
 library(dplyr)
 library(parallel)
+library(arrow)
 
 ############################################################
 #                     User Input
@@ -48,12 +49,19 @@ logDebug <- function(name, value) {
 
 args <- commandArgs()
 
-pickArg <- function(option, args) {
+pickArg <- function(option, args, default=NULL) {
 	iOption <- match(option, args, nomatch=-1)
+	option <- NULL
 	if(iOption == -1) {
-		stop(paste("Did not provide command line option ", option))
+		if(is.null(default)) {
+			stop(paste("Did not provide command line option ", option))
+		} else {
+			option <- default
+		}
+	} else {
+		option <- args[iOption + 1]
 	}
-	return(args[iOption + 1])
+	return(option)
 }
 
 pickIntegerArg <- function(option, args) {
@@ -70,6 +78,11 @@ i <- pickIntegerArg("--i", args)
 gds_file <- pickArg("--gds", args)
 null_model_file <- pickArg("--null-model", args)
 output_file <- pickArg("--out", args)
+output_format <- pickArg("--output-format", args, "rdata")
+
+if(!(output_format == "rdata" || output_format == "parquet")) {
+	stop(paste("Output format needs to be either 'rdata' or 'parquet', but got ", output_format))
+}
 
 ############################################################
 #                    Preparation Step
@@ -155,7 +168,17 @@ for(j in 1:subsegment_num)
 
 ## save results
 logDebug("summary_stat", summary_stat)
-save(summary_stat, file = output_file, compress = "xz")
+if(output_format == "parquet") {
+	write_parquet(
+		summary_stat,
+		output_file,
+		compression = ifelse(arrow::codec_is_available("zstd"), "zstd", arrow:::default_parquet_compression()),
+		write_statistics = T,
+		version = "2.0"
+	)
+} else {
+	save(summary_stat, file = output_file, compress = "xz")
+}
 
 seqResetFilter(genofile)
 

@@ -15,7 +15,7 @@ workflow metastaar {
         String output_file_prefix_sum_stats
         String output_file_prefix_cov
     }
-    String output_file_suffix = "Rdata"
+    String output_file_suffix = "parquet"
     scatter(chromosome_segments in chromosome_segments_list) {
         String chromosome = chromosome_segments.chromosome
         File genotypes_file = chromosome_segments.genotypes_file
@@ -57,17 +57,17 @@ task calculate_summary_stats {
         String output_file_name
     }
     runtime {
-        preemptible: 3
-        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.1.0"
+#        preemptible: 3
+        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.1.2"
         cpu: 1
-        memory: "1 GB"
+        memory: "9 GB"
         disks: "local-disk 20 HDD"
     }
     command <<<
         set -e
         echo "Now calculating summary statistics"
         Rscript --verbose /r/MetaSTAAR_Worker_Score_Generation.R --chr ~{chromosome}  --i ~{segment}  \
-          --gds ~{genotypes_file} --null-model ~{null_model_file}  --out ~{output_file_name}
+          --gds ~{genotypes_file} --null-model ~{null_model_file}  --out ~{output_file_name} --output-format parquet
         echo "Done calculating summary statistics"
     >>>
     output {
@@ -85,10 +85,10 @@ task calculate_covariances {
         String output_file_name
     }
     runtime {
-        preemptible: 3
-        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.1.0"
+#        preemptible: 3
+        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.1.2"
         cpu: 1
-        memory: "1 GB"
+        memory: "8 GB"
         disks: "local-disk 20 HDD"
     }
     command <<<
@@ -96,7 +96,7 @@ task calculate_covariances {
         echo "Now calculating covariances"
         Rscript --verbose /r/MetaSTAAR_Worker_Cov_Generation.R --chr ~{chromosome}  --i ~{segment}  \
           --gds ~{genotypes_file} --null-model ~{null_model_file}  --out ~{output_file_name}  \
-          --maf-cutoff ~{maf_cutoff}
+          --maf-cutoff ~{maf_cutoff} --output-format parquet
         echo "Done calculating covariances"
     >>>
     output {
