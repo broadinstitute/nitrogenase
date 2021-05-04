@@ -73,12 +73,21 @@ pickIntegerArg <- function(option, args) {
 	return(arg_as_int)
 }
 
+pickFloatArg <- function(option, args) {
+	arg <- pickArg(option, args)
+	arg_as_numeric <- as.numeric(arg)
+	if(is.na(arg_as_numeric)) {
+		stop(paste(option, " needs a numeric value, but got ", arg))
+	}
+	return(arg_as_numeric)
+}
+
 chr <- pickArg("--chr", args)
 i <- pickIntegerArg("--i", args)
 gds_file <- pickArg("--gds", args)
 null_model_file <- pickArg("--null-model", args)
 output_file <- pickArg("--out", args)
-cov_maf_cutoff <- pickArg("--maf-cutoff", args)
+cov_maf_cutoff <- pickFloatArg("--maf-cutoff", args)
 output_format <- pickArg("--output-format", args, "rdata")
 
 if(!(output_format == "rdata" || output_format == "parquet")) {
@@ -191,6 +200,8 @@ if(MAF_sub_seq_num > 0)
 
 	MAF <- pmin(AF,1-AF)
 
+	print("cov_maf_cutoff")
+	print(cov_maf_cutoff)
 	### rare variant id
 	print("length(MAF)")
 	print(length(MAF))
@@ -204,6 +215,9 @@ if(MAF_sub_seq_num > 0)
 
 	print("sum(RV_label)")
 	print(sum(RV_label))
+
+	print("sum((MAF<0.05)&(MAF>0))")
+	print(sum((MAF<0.05)&(MAF>0)))
 
 	print("sum((MAF<cov_maf_cutoff)&(MAF>1e-10))")
 	print(sum((MAF<cov_maf_cutoff)&(MAF>1e-10)))
