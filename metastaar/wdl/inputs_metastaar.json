@@ -1,10 +1,10 @@
 {
-  "metastaar.null_model_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/Null_Model/obj.SMMAT.HDL.fulladj.sp.20190912.Rdata",
+  "metastaar.null_model_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/Null_Model/obj.SMMAT.HDL.fulladj.sp.Rdata",
   "metastaar.covariances_maf_cutoff": 0.05,
   "metastaar.chromosome_segments_list": [
     {
       "chromosome": "22",
-      "genotypes_file": "gs://fc-secure-19d7e6e8-18bb-4649-9e66-b2ac84049a85/F8_aGDS/freeze.8.chr22.pass_and_fail.gtonly.minDP0.gds",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr22.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
       "segs_from": 23,
       "segs_to": 23
     }

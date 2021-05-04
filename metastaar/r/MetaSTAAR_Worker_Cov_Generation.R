@@ -189,8 +189,25 @@ if(MAF_sub_seq_num > 0)
 	}
 	MAF <- pmin(AF,1-AF)
 
+	MAF <- pmin(AF,1-AF)
+
+	### rare variant id
+	print("length(MAF)")
+	print(length(MAF))
+	print("min(MAF[MAF>0])")
+	print(min(MAF[MAF>0]))
+	print("sum((MAF>0)&(MAF<1e-04))")
+	print(sum((MAF>0)&(MAF<1e-04)))
+
 	### rare variant id
 	RV_label <- (MAF<cov_maf_cutoff)&(MAF>0)
+
+	print("sum(RV_label)")
+	print(sum(RV_label))
+
+	print("sum((MAF<cov_maf_cutoff)&(MAF>1e-10))")
+	print(sum((MAF<cov_maf_cutoff)&(MAF>1e-10)))
+
 	variant.id.sub.rare <- variant.id.sub[RV_label]
 	AF <- AF[RV_label]
 	variant_pos <- variant_pos[RV_label]
