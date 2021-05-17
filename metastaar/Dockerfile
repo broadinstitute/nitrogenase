@@ -5,6 +5,7 @@ RUN echo "install.packages(c(\"arrow\", \"optparse\"), repos=\"http://lib.stat.c
           > install_packages.R && \
     Rscript install_packages.R && \
     rm install_packages.R
+ADD r/STAAR_null_model.R STAAR_null_model.R
 ADD r/MetaSTAAR_Worker_Score_Generation.R MetaSTAAR_Worker_Score_Generation.R
 ADD r/MetaSTAAR_Worker_Cov_Generation.R MetaSTAAR_Worker_Cov_Generation.R
 

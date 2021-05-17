@@ -1,0 +1,10 @@
+{
+  "null_model.covariates": "Array[String]",
+  "null_model.phenotype_file": "File",
+  "null_model.out_file_name": "String",
+  "null_model.phenotype": "String",
+  "null_model.sample_id_field": "String",
+  "null_model.groups": "String? (optional)",
+  "null_model.kinship_matrix_file": "File? (optional)"
+}
+
