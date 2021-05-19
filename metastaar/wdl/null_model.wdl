@@ -35,7 +35,7 @@ task calculate_null_model {
     runtime {
         docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.2.5"
         cpu: 1
-        memory: "160 GB"
+        memory: "176 GB"
         disks: "local-disk 25 HDD"
     }
     command <<<
