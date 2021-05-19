@@ -33,16 +33,16 @@ task calculate_null_model {
         String out_file_name
     }
     runtime {
-        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.2.0"
+        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.2.5"
         cpu: 1
-        memory: "8 GB"
-        disks: "local-disk 20 HDD"
+        memory: "160 GB"
+        disks: "local-disk 25 HDD"
     }
     command <<<
         set -e
         echo "Now calculating covariances"
-        Rscript --verbose /r/STAAR_null_model.R --phenotype-file ~{phenotype_file} --sample-id ~{sample_id_field}
-            --phenotype ~{phenotype} ~{"--groups" + groups} ~{"--grm" + kinship_matrix_file}
+        Rscript --verbose /r/STAAR_null_model.R --phenotype-file ~{phenotype_file} --sample-id ~{sample_id_field} \
+            --phenotype ~{phenotype} ~{"--groups" + groups} ~{"--grm " + kinship_matrix_file} \
             --covariates ~{sep="," covariates} --output ~{out_file_name}
         echo "Done calculating covariances"
     >>>

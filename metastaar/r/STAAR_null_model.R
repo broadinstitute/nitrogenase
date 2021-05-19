@@ -2,6 +2,7 @@ library(STAAR)
 library(Matrix)
 library(GENESIS)
 library(optparse)
+library(stringr)
 
 option_list <- list(
   make_option(dest = "phenotype_file", c("--phenotype-file"), type = "character", default = NULL,
@@ -45,15 +46,15 @@ phenotype <- phenotype[!is.na(phenotype[[opt$phenotype]]),]
 ## load GRM
 load(opt$grm)
 
-covariates_string <- opt$covariates
+covariates_string_raw <- opt$covariates
 
-str_replace_all(covariates_string, ",", "+")
+covariates_string <- str_replace_all(covariates_string_raw, ",", "+")
 
 formula <- as.formula(paste(opt$phenotype, "~", covariates_string))
 
 ### fit null model
 null_model <-
-  fit_null_glmmkin(formula, data = phenotype, kins = skm, kins_cutoff = 0.022, id = opt$sample_id, groups = opt$groups,
-                   use_sparse = TRUE, family = gaussian(link = "identity"), verbose = T)
+  fit_null_glmmkin(formula, data = phenotype, kins = kmatr, kins_cutoff = 0.022, id = opt$sample_id,
+                   groups = opt$groups, use_sparse = TRUE, family = gaussian(link = "identity"), verbose = T)
 
 save(null_model, file = opt$output)
