@@ -123,7 +123,7 @@ logDebug("segment.num", segment.num)
 ###  Generate Summary Stat Score
 print(paste0("Chromosome: ", chr, "; Segment: ", i))
 
-subsegment_num <- 30
+subsegment_num <- 25
 summary_stat <- NULL
 
 for(j in 1:subsegment_num)

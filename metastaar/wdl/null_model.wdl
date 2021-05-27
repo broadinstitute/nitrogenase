@@ -6,6 +6,7 @@ workflow null_model {
         String sample_id_field
         String phenotype
         String? groups
+        Boolean phenotype_is_binary
         File? kinship_matrix_file
         Array[String] covariates
         String out_file_name
@@ -16,6 +17,7 @@ workflow null_model {
             sample_id_field = sample_id_field,
             phenotype = phenotype,
             groups = groups,
+            phenotype_is_binary = phenotype_is_binary,
             kinship_matrix_file = kinship_matrix_file,
             covariates = covariates,
             out_file_name = out_file_name
@@ -28,14 +30,15 @@ task calculate_null_model {
         String sample_id_field
         String phenotype
         String? groups
+        Boolean phenotype_is_binary
         File? kinship_matrix_file
         Array[String] covariates
         String out_file_name
     }
     runtime {
-        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.2.5"
+        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.2.8"
         cpu: 1
-        memory: "176 GB"
+        memory: "208 GB"
         disks: "local-disk 25 HDD"
     }
     command <<<
@@ -43,6 +46,7 @@ task calculate_null_model {
         echo "Now calculating covariances"
         Rscript --verbose /r/STAAR_null_model.R --phenotype-file ~{phenotype_file} --sample-id ~{sample_id_field} \
             --phenotype ~{phenotype} ~{"--groups" + groups} ~{"--grm " + kinship_matrix_file} \
+        ~{if phenotype_is_binary then "--binary" else "" }  \
             --covariates ~{sep="," covariates} --output ~{out_file_name}
         echo "Done calculating covariances"
     >>>

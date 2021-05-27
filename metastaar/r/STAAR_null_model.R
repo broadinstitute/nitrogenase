@@ -13,6 +13,8 @@ option_list <- list(
               metavar = "phenotype"),
   make_option(dest = "groups", c("--groups"), type = "character", default = NULL, help = "Groups used (optional).",
               metavar = "phenotype"),
+  make_option(dest = "binary", c("--binary"), type = "logical", action = "store_true", default = FALSE,
+              help = "Whether phenotype is binary.", metavar = "binary"),
   make_option(dest = "grm", c("--grm"), type = "character", default = NULL, help = "The GRM file.", metavar = "grm"),
   make_option(dest = "covariates", c("--covariates"), type = "character", default = NULL,
               help = "Covariates as a comma-separated list", metavar = "covariates"),
@@ -22,6 +24,12 @@ option_list <- list(
 
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
+
+if (opt$binary) {
+  print("Phenotype is considered binary.")
+} else {
+  print("Phenotype is not considered binary.")
+}
 
 assert_opt <- function(id, label) {
   if (is.null(opt[[id]])) {
@@ -53,8 +61,14 @@ covariates_string <- str_replace_all(covariates_string_raw, ",", "+")
 formula <- as.formula(paste(opt$phenotype, "~", covariates_string))
 
 ### fit null model
-null_model <-
-  fit_null_glmmkin(formula, data = phenotype, kins = kmatr, kins_cutoff = 0.022, id = opt$sample_id,
-                   groups = opt$groups, use_sparse = TRUE, family = gaussian(link = "identity"), verbose = T)
+if (opt$binary) {
+  null_model <-
+    fit_null_glmmkin(formula, data = phenotype, kins = kmatr, kins_cutoff = 0.022, id = opt$sample_id,
+                     use_sparse = TRUE, family = binomial(link = "logit"), verbose = T)
+} else {
+  null_model <-
+    fit_null_glmmkin(formula, data = phenotype, kins = kmatr, kins_cutoff = 0.022, id = opt$sample_id,
+                     groups = opt$groups, use_sparse = TRUE, family = gaussian(link = "identity"), verbose = T)
+}
 
 save(null_model, file = opt$output)

@@ -2,6 +2,7 @@
   "null_model.phenotype_file": "gs://fc-a5d0017b-e76c-47ad-aea6-94499993b86e/Phenotypes/Pooled/Freeze5.T2D.amanning.08.13.2018/Freeze5.T2D.amanning.08.13.2018.c.EU.for_analysis.csv",
   "null_model.phenotype": "T2D.PCancestry",
   "null_model.sample_id_field": "topmedid",
+  "null_model.phenotype_is_binary": true,
   "null_model.covariates": ["last_exam_age", "sex", "topmed_project"],
   "null_model.kinship_matrix_file": "gs://fc-adaae650-a458-4c56-8a55-d96fa463a5c6/grms/freeze.5b.auto.pass.gtonly.minDP10.mmap.grm.DP.fixed.0.001.matrix.cor.Rda",
   "null_model.out_file_name": "null_model.Rdata"
