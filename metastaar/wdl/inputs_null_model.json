@@ -1,10 +1,17 @@
 {
-  "null_model.phenotype_file": "gs://fc-a5d0017b-e76c-47ad-aea6-94499993b86e/Phenotypes/Pooled/Freeze5.T2D.amanning.08.13.2018/Freeze5.T2D.amanning.08.13.2018.c.EU.for_analysis.csv",
+  "null_model.phenotype_file": "gs://fc-a5d0017b-e76c-47ad-aea6-94499993b86e/Phenotypes/Freeze5.T2D.amanning.08.13.2018.for_analysis_PCS_update26SEP2018_MM.csv",
   "null_model.phenotype": "T2D.PCancestry",
   "null_model.sample_id_field": "topmedid",
   "null_model.phenotype_is_binary": true,
-  "null_model.covariates": ["last_exam_age", "sex", "topmed_project"],
-  "null_model.kinship_matrix_file": "gs://fc-adaae650-a458-4c56-8a55-d96fa463a5c6/grms/freeze.5b.auto.pass.gtonly.minDP10.mmap.grm.DP.fixed.0.001.matrix.cor.Rda",
+  "null_model.covariates": [
+    "sex", "last_exam_age", "last_exam_bmi", "PC1" , "PC2", "PC3", "PC4", "PC5", "PC6", "PC7", "project_JHS_c.AF",
+    "project_COPD_c.EU", "project_GeneSTAR_c.EU", "project_AFGen_c.EU", "project_CFS_c.EU", "project_FHS_c.EU",
+    "project_HyperGEN_GENOA_c.AF", "project_VTE_c.EU", "project_VTE_c.AF", "project_WHI_c.EU", "project_GenSalt_c.AS",
+    "project_SAFS_c.HS", "project_COPD_c.AF", "project_MESA_c.HS", "project_WHI_c.AF", "project_MESA_c.AF",
+    "project_MESA_c.AS", "project_SAS_c.SAS", "project_AA_CAC_c.AF", "project_MESA_c.EU", "project_Amish_c.EU",
+    "project_CFS_c.AF", "project_GOLDN_c.EU", "project_WHI_c.AS", "project_GeneSTAR_c.AF", "project_WHI_c.HS"
+  ],
+  "null_model.kinship_matrix_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/freeze.5b.auto.pass.gtonly.minDP10.mmap.grm.DP.fixed.0.001.cor_SparseGRM_grmPCrelate_0625.Rda",
   "null_model.out_file_name": "null_model.Rdata"
 }
 

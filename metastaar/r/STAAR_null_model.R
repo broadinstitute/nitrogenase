@@ -52,7 +52,13 @@ phenotype <- read.csv(opt$phenotype_file, header = TRUE, , stringsAsFactors = FA
 phenotype <- phenotype[!is.na(phenotype[[opt$phenotype]]),]
 
 ## load GRM
-load(opt$grm)
+temp.space <- new.env()
+kmatr_list <- load(opt$grm, temp.space)
+print(paste0("kmatr_list = ", kmatr_list))
+kmatr <- get(kmatr_list, temp.space)
+print(paste0("is.list(kmatr) = ", is.list(kmatr)))
+print(paste0("length(kmatr) = ", length(kmatr)))
+rm(temp.space)
 
 covariates_string_raw <- opt$covariates
 
