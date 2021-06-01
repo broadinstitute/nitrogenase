@@ -43,12 +43,12 @@ task calculate_null_model {
     }
     command <<<
         set -e
-        echo "Now calculating covariances"
+        echo "Now calculating null model"
         Rscript --verbose /r/STAAR_null_model.R --phenotype-file ~{phenotype_file} --sample-id ~{sample_id_field} \
             --phenotype ~{phenotype} ~{"--groups" + groups} ~{"--grm " + kinship_matrix_file} \
         ~{if phenotype_is_binary then "--binary" else "" }  \
             --covariates ~{sep="," covariates} --output ~{out_file_name}
-        echo "Done calculating covariances"
+        echo "Done calculating null model."
     >>>
     output {
         File out_file = out_file_name
