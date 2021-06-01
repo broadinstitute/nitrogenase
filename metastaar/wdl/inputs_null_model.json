@@ -9,7 +9,7 @@
     "project_HyperGEN_GENOA_c.AF", "project_VTE_c.EU", "project_VTE_c.AF", "project_WHI_c.EU", "project_GenSalt_c.AS",
     "project_SAFS_c.HS", "project_COPD_c.AF", "project_MESA_c.HS", "project_WHI_c.AF", "project_MESA_c.AF",
     "project_MESA_c.AS", "project_SAS_c.SAS", "project_AA_CAC_c.AF", "project_MESA_c.EU", "project_Amish_c.EU",
-    "project_CFS_c.AF", "project_GOLDN_c.EU", "project_WHI_c.AS", "project_GeneSTAR_c.AF", "project_WHI_c.HS"
+    "project_CFS_c.AF", "project_GOLDN_c.EU", "project_WHI_c.AS", "project_GeneSTAR_c.AF"
   ],
   "null_model.kinship_matrix_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/freeze.5b.auto.pass.gtonly.minDP10.mmap.grm.DP.fixed.0.001.cor_SparseGRM_grmPCrelate_0625.Rda",
   "null_model.out_file_name": "null_model.Rdata"
