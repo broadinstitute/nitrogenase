@@ -276,21 +276,21 @@ GTSinvG_rare <- MetaSTAAR_worker_cov(genotype, obj_nullmodel = nullobj, cov_maf_
 
 # This function can be used to write out the sparse component of the MetaSTAAR covariant matrix.
 # It corresponds to the save(GTSinvG_rare,...) part of the script that writes out covariance.
-write_sparse_parquet <- function(mat, path) {
+write_sparse_parquet <- function(mat, path, metadata=NULL) {
 	if (class(mat) != "dgCMatrix") {
-		stop("Error when writing matrix to sparse parquet: input matrix is not dgCMatrix")
+		stop("Error when writing matrix to sparse parquet: input matrix is not dgCMatrix");
 	}
 
 	# Now we have a matrix in dgCMatrix format, which is CSC (sparse column) format.
 	# However, parquet/arrow require equal length arrays. Triplet format (COO) works well
 	# for this. The `col_ind = ` line converts from the column pointer in CSC format to an
 	# array of column indices like what would be used in COO format.
-	row_ind <- mat@i
-	col_ind <- as.integer(rep(1:(length(mat@p) - 1), diff(mat@p)) - 1)
+	row_ind = mat@i
+	col_ind = as.integer(rep(1:(length(mat@p) - 1), diff(mat@p)) - 1)
 
 	# Specify column types for parquet. We probably only need 32-bit float for the
 	# covariance values, but for now we'll stick with 64-bit.
-	sch <- arrow::schema(
+	sch = arrow::schema(
 		row = uint32(),
 		col = uint32(),
 		value = float64(),
@@ -299,13 +299,17 @@ write_sparse_parquet <- function(mat, path) {
 	# Store the number of rows and columns for the sparse matrix into the
 	# parquet file metadata. This is needed when loading into C++ to know the
 	# matrix size without reading through the entire file.
-	sch <- sch$WithMetadata(list(
+	required_metadata = list(
 		nrows = dim(mat)[1],
 		ncols = dim(mat)[2]
-	))
+	)
+
+	final_metadata = c(required_metadata, metadata)
+
+	sch = sch$WithMetadata(final_metadata)
 
 	# Create an arrow table for writing to parquet.
-	tab <- Table$create(
+	tab = Table$create(
 		row = row_ind,
 		col = col_ind,
 		value = mat@x,
@@ -318,9 +322,9 @@ write_sparse_parquet <- function(mat, path) {
 	#
 	# zstd compression gives a good balance between compression ratio, compression speed, and
 	# decompression speed. Columns are dictionary or RLE encoded automatically first.
-	comp <- arrow:::default_parquet_compression()
+	comp = arrow:::default_parquet_compression()
 	if (arrow::codec_is_available("zstd")) {
-		comp <- "zstd"
+		comp = "zstd"
 	} else {
 		warning("zstd compression codec unavailable, trying default parquet compression instead (snappy)")
 	}
@@ -334,10 +338,22 @@ write_sparse_parquet <- function(mat, path) {
 		chunk_size = 20000000
 	)
 }
-
 ## save results
 if(output_format == "parquet") {
-	write_sparse_parquet(GTSinvG_rare, output_file)
+	write_sparse_parquet(
+		GTSinvG_rare,
+		paste0(args$out_prefix, ".segment", i, ".metastaar.cov.parquet"),
+		list(
+			chrom = head(chrom, 1),
+			pos_start = min(variant_pos),
+			pos_end = max(variant_pos),
+			pos_mid = region_midpos,
+			region_start = region_start_loc,
+			region_mid = region_midpos,
+			region_end = region_end_loc,
+			cov_maf_cutoff = cov_maf_cutoff
+		)
+	)
 } else {
 	save(GTSinvG_rare, file = output_file, compress = "xz")
 }

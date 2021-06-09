@@ -1,5 +1,5 @@
 {
-  "metastaar.null_model_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/Null_Model/obj.SMMAT.HDL.fulladj.sp.Rdata",
+  "metastaar.null_model_file": "gs://fc-4acc7af3-6463-4452-80c1-98c8b6cf95d5/null_model/t2d/null_model.Rdata",
   "metastaar.covariances_maf_cutoff": 0.05,
   "metastaar.chromosome_segments_list": [
     {

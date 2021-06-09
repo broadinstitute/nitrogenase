@@ -73,6 +73,55 @@ pickIntegerArg <- function(option, args) {
 	return(arg_as_int)
 }
 
+write_sumstat_parquet <- function(df, path, metadata=NULL) {
+	# Create an arrow table from the df.
+	# This seems to allocate no additional memory - must be making references to the vectors in the df directly.
+	def_first10 = list(
+		chr = string(),
+		pos = uint32(),
+		ref = string(),
+		alt = string(),
+		alt_AC = uint32(),
+		MAC = uint32(),
+		MAF = double(),
+		N = uint32(),
+		U = double(),
+		V = double()
+	)
+
+	ncovar = dim(df)[2] - 10
+	def_covar = setNames(replicate(ncovar, double()), 1:ncovar)
+	schema = do.call(schema, c(def_first10, def_covar))
+
+	tab = Table$create(df, schema=schema)
+
+	# Combine metadata from arrow tabe with additional metadata provided by user.
+	# Could be things like chromosome, start position in file, end position in file, etc.
+	tab$metadata = c(tab$metadata, metadata)
+
+	# Write to parquet. Note if we specify 'chunk_size' = some number of rows, we can create
+	# row groups within the parquet files. This allows for running queries that only load certain
+	# groups, rather than the entire file.
+	#
+	# zstd compression gives a good balance between compression ratio, compression speed, and
+	# decompression speed. Columns are dictionary or RLE encoded automatically first.
+	comp = arrow:::default_parquet_compression()
+	if (arrow::codec_is_available("zstd")) {
+		comp = "zstd"
+	} else {
+		warning("zstd compression codec unavailable, trying default parquet compression instead (snappy)")
+	}
+
+	write_parquet(
+		tab,
+		path,
+		compression = comp,
+		write_statistics = T,
+		version = "2.0",
+	)
+}
+
+
 chr <- pickArg("--chr", args)
 i <- pickIntegerArg("--i", args)
 gds_file <- pickArg("--gds", args)
@@ -169,12 +218,19 @@ for(j in 1:subsegment_num)
 ## save results
 logDebug("summary_stat", summary_stat)
 if(output_format == "parquet") {
-	write_parquet(
+	write_sumstat_parquet(
 		summary_stat,
-		output_file,
-		compression = ifelse(arrow::codec_is_available("zstd"), "zstd", arrow:::default_parquet_compression()),
-		write_statistics = T,
-		version = "2.0"
+		paste0(out_prefix, ".segment", i, ".metastaar.sumstat.parquet"),
+		list(
+			chrom = head(summary_stat$chr, 1),
+			pos_start = head(summary_stat$pos, 1),
+			pos_end = tail(summary_stat$pos, 1),
+			region_start = (i-1) * segment_size + 1,
+			region_mid = i * segment_size,
+			region_end = (i+1) * segment_size,
+			nrows = dim(summary_stat)[1],
+			ncols = dim(summary_stat)[2]
+		)
 	)
 } else {
 	save(summary_stat, file = output_file, compress = "xz")
@@ -186,4 +242,6 @@ rm(genotype,results_temp,pos,ref,alt,variant_info,summary_stat)
 gc()
 
 seqClose(genofile)
+
+
 	 
