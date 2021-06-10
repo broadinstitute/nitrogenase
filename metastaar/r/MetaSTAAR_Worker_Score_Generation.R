@@ -127,10 +127,10 @@ i <- pickIntegerArg("--i", args)
 gds_file <- pickArg("--gds", args)
 null_model_file <- pickArg("--null-model", args)
 output_file <- pickArg("--out", args)
-output_format <- pickArg("--output-format", args, "rdata")
+output_format <- pickArg("--output-format", args, "Rdata")
 
-if(!(output_format == "rdata" || output_format == "parquet")) {
-	stop(paste("Output format needs to be either 'rdata' or 'parquet', but got ", output_format))
+if(!(output_format == "Rdata" || output_format == "parquet")) {
+	stop(paste("Output format needs to be either 'Rdata' or 'parquet', but got ", output_format))
 }
 
 ############################################################
