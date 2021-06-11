@@ -29,7 +29,6 @@ workflow metastaar {
             String output_file_name_cov = output_file_prefix_cov + chrom_seg_part + output_format
             call calculate_summary_stats {
                 input:
-                    chromosome = chromosome,
                     segment = segment,
                     null_model_file = null_model_file,
                     genotypes_file = genotypes_file,
@@ -38,7 +37,6 @@ workflow metastaar {
             }
             call calculate_covariances {
                 input:
-                    chromosome = chromosome,
                     segment = segment,
                     maf_cutoff = covariances_maf_cutoff,
                     null_model_file = null_model_file,
@@ -52,7 +50,6 @@ workflow metastaar {
 
 task calculate_summary_stats {
     input {
-        String chromosome
         Int segment
         File null_model_file
         File genotypes_file
@@ -61,7 +58,7 @@ task calculate_summary_stats {
     }
     runtime {
 #        preemptible: 3
-        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.3.4"
+        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.3.7"
         cpu: 1
         memory: "9 GB"
         disks: "local-disk 20 HDD"
@@ -69,7 +66,7 @@ task calculate_summary_stats {
     command <<<
         set -e
         echo "Now calculating summary statistics"
-        Rscript --verbose /r/MetaSTAAR_Worker_Score_Generation.R --chr ~{chromosome}  --i ~{segment}  \
+        Rscript --verbose /r/MetaSTAAR_Worker_Score_Generation.R --i ~{segment}  \
           --gds ~{genotypes_file} --null-model ~{null_model_file}  --out ~{output_file_name}  \
         --output-format ~{output_format}
         echo "Done calculating summary statistics"
@@ -81,7 +78,6 @@ task calculate_summary_stats {
 
 task calculate_covariances {
     input {
-        String chromosome
         Int segment
         Float maf_cutoff
         File null_model_file
@@ -91,7 +87,7 @@ task calculate_covariances {
     }
     runtime {
 #        preemptible: 3
-        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.3.4"
+        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.3.7"
         cpu: 1
         memory: "8 GB"
         disks: "local-disk 20 HDD"
@@ -99,7 +95,7 @@ task calculate_covariances {
     command <<<
         set -e
         echo "Now calculating covariances"
-        Rscript --verbose /r/MetaSTAAR_Worker_Cov_Generation.R --chr ~{chromosome}  --i ~{segment}  \
+        Rscript --verbose /r/MetaSTAAR_Worker_Cov_Generation.R --i ~{segment}  \
           --gds ~{genotypes_file} --null-model ~{null_model_file}  --out ~{output_file_name}  \
           --maf-cutoff ~{maf_cutoff} --output-format ~{output_format}
         echo "Done calculating covariances"

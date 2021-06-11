@@ -84,7 +84,6 @@ pickFloatArg <- function(option, args) {
 	return(arg_as_numeric)
 }
 
-chr <- pickArg("--chr", args)
 i <- pickIntegerArg("--i", args)
 gds_file <- pickArg("--gds", args)
 null_model_file <- pickArg("--null-model", args)
@@ -134,7 +133,6 @@ segment.num <- ceiling(max_position/segment.size)
 logDebug("segment.num", segment.num)
 
 ### Generate Summary Stat Cov
-print(paste0("Chromosome: ", chr, "; Segment: ", i))
 
 ### segment location
 region_start_loc <- (i-1) * segment.size + 1

@@ -123,8 +123,6 @@ write_sumstat_parquet <- function(df, path, metadata=NULL) {
 	)
 }
 
-
-chr <- pickArg("--chr", args)
 i <- pickIntegerArg("--i", args)
 gds_file <- pickArg("--gds", args)
 null_model_file <- pickArg("--null-model", args)
@@ -153,6 +151,7 @@ genofile <- seqOpen(gds.path)
 logDebug("genofile", genofile)
 
 ## get SNV id
+chrom <- seqGetData(genofile, "chromosome")
 filter <- seqGetData(genofile, "annotation/filter")
 AVGDP <- seqGetData(genofile, "annotation/info/AVGDP")
 SNVlist <- filter == "PASS" & AVGDP > 10 & isSNV(genofile)
@@ -172,7 +171,6 @@ segment.num <- ceiling(max_position/segment.size)
 logDebug("segment.num", segment.num)
 
 ###  Generate Summary Stat Score
-print(paste0("Chromosome: ", chr, "; Segment: ", i))
 
 subsegment_num <- 25
 summary_stat <- NULL
@@ -209,7 +207,7 @@ for(j in 1:subsegment_num)
 
 	if(!is.null(genotype))
 	{
-		variant_info <- data.frame(chr,pos,ref,alt)
+		variant_info <- data.frame(chrom,pos,ref,alt)
 
 		results_temp <- NULL
 		results_temp <- MetaSTAAR_worker_sumstat(genotype,nullobj,variant_info)
@@ -227,9 +225,9 @@ if(output_format == "parquet") {
 			chrom = head(summary_stat$chr, 1),
 			pos_start = head(summary_stat$pos, 1),
 			pos_end = tail(summary_stat$pos, 1),
-			region_start = (i-1) * segment_size + 1,
-			region_mid = i * segment_size,
-			region_end = (i+1) * segment_size,
+			region_start = (i-1) * segment.size + 1,
+			region_mid = i * segment.size,
+			region_end = (i+1) * segment.size,
 			nrows = dim(summary_stat)[1],
 			ncols = dim(summary_stat)[2]
 		)
