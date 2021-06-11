@@ -151,7 +151,6 @@ genofile <- seqOpen(gds.path)
 logDebug("genofile", genofile)
 
 ## get SNV id
-chrom <- seqGetData(genofile, "chromosome")
 filter <- seqGetData(genofile, "annotation/filter")
 AVGDP <- seqGetData(genofile, "annotation/info/AVGDP")
 SNVlist <- filter == "PASS" & AVGDP > 10 & isSNV(genofile)
@@ -188,6 +187,7 @@ for(j in 1:subsegment_num)
 	is.in <- (SNVlist)&(position>=region_start_loc)&(position<=region_end_loc)
 	seqSetFilter(genofile,variant.id=variant.id[is.in],sample.id=phenotype.id)
 
+	chrom <- seqGetData(genofile, "chromosome")
 	pos <- as.integer(seqGetData(genofile, "position"))
 	ref <- unlist(lapply(strsplit(seqGetData(genofile, "allele"),","),`[[`,1))
 	alt <- unlist(lapply(strsplit(seqGetData(genofile, "allele"),","),`[[`,2))
