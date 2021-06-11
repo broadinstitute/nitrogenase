@@ -11,6 +11,6 @@
   ],
   "metastaar.output_file_prefix_sum_stats": "summary_statistics",
   "metastaar.output_file_prefix_cov": "covariances",
-  "metastaar.output_format": "Rdata"
+  "metastaar.output_format": "parquet"
 }
 

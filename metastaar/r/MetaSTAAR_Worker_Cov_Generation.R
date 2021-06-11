@@ -14,6 +14,8 @@ library(dplyr)
 library(parallel)
 library(arrow)
 
+options(error=function()traceback(2))
+
 ############################################################
 #                     User Input
 ############################################################
@@ -119,6 +121,8 @@ gc()
 
 variant.id <- seqGetData(genofile, "variant.id")
 logDebug("variant.id", variant.id)
+
+chrom = seqGetData(genofile, "chromosome")
 
 ## Position
 position <- as.integer(seqGetData(genofile, "position"))
@@ -342,7 +346,7 @@ write_sparse_parquet <- function(mat, path, metadata=NULL) {
 if(output_format == "parquet") {
 	write_sparse_parquet(
 		GTSinvG_rare,
-		paste0(args$out_prefix, ".segment", i, ".metastaar.cov.parquet"),
+		output_file,
 		list(
 			chrom = head(chrom, 1),
 			pos_start = min(variant_pos),

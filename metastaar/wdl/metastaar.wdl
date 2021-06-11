@@ -25,8 +25,8 @@ workflow metastaar {
         scatter(seg_offset in range(n_segs)) {
             Int segment = segs_from + seg_offset
             String chrom_seg_part = ".chr" + chromosome + "." + segment + "."
-            String output_file_name_score = output_file_prefix_sum_stats + chrom_seg_part + "." + output_format
-            String output_file_name_cov = output_file_prefix_cov + chrom_seg_part + "." + output_format
+            String output_file_name_score = output_file_prefix_sum_stats + chrom_seg_part + output_format
+            String output_file_name_cov = output_file_prefix_cov + chrom_seg_part + output_format
             call calculate_summary_stats {
                 input:
                     chromosome = chromosome,
@@ -61,7 +61,7 @@ task calculate_summary_stats {
     }
     runtime {
 #        preemptible: 3
-        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.3.2"
+        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.3.4"
         cpu: 1
         memory: "9 GB"
         disks: "local-disk 20 HDD"
@@ -91,7 +91,7 @@ task calculate_covariances {
     }
     runtime {
 #        preemptible: 3
-        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.3.2"
+        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.3.4"
         cpu: 1
         memory: "8 GB"
         disks: "local-disk 20 HDD"

@@ -14,6 +14,8 @@ library(dplyr)
 library(parallel)
 library(arrow)
 
+options(error=function()traceback(2))
+
 ############################################################
 #                     User Input
 ############################################################
@@ -220,7 +222,7 @@ logDebug("summary_stat", summary_stat)
 if(output_format == "parquet") {
 	write_sumstat_parquet(
 		summary_stat,
-		paste0(out_prefix, ".segment", i, ".metastaar.sumstat.parquet"),
+		output_file,
 		list(
 			chrom = head(summary_stat$chr, 1),
 			pos_start = head(summary_stat$pos, 1),
