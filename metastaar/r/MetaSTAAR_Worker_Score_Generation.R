@@ -187,7 +187,7 @@ for(j in 1:subsegment_num)
 	is.in <- (SNVlist)&(position>=region_start_loc)&(position<=region_end_loc)
 	seqSetFilter(genofile,variant.id=variant.id[is.in],sample.id=phenotype.id)
 
-	chr <- seqGetData(genofile, "chromosome")
+	chr <- as.character(seqGetData(genofile, "chromosome"))
 	pos <- as.integer(seqGetData(genofile, "position"))
 	ref <- unlist(lapply(strsplit(seqGetData(genofile, "allele"),","),`[[`,1))
 	alt <- unlist(lapply(strsplit(seqGetData(genofile, "allele"),","),`[[`,2))
@@ -222,7 +222,7 @@ if(output_format == "parquet") {
 		summary_stat,
 		output_file,
 		list(
-			chrom = as.character(head(summary_stat$chr, 1)),
+			chrom = head(summary_stat$chr, 1),
 			pos_start = head(summary_stat$pos, 1),
 			pos_end = tail(summary_stat$pos, 1),
 			region_start = (i-1) * segment.size + 1,
