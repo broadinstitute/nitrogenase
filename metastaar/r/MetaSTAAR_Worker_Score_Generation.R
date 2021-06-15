@@ -222,7 +222,7 @@ if(output_format == "parquet") {
 		summary_stat,
 		output_file,
 		list(
-			chrom = head(summary_stat$chr, 1),
+			chrom = as.character(head(summary_stat$chr, 1)),
 			pos_start = head(summary_stat$pos, 1),
 			pos_end = tail(summary_stat$pos, 1),
 			region_start = (i-1) * segment.size + 1,
