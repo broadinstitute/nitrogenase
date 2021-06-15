@@ -187,7 +187,7 @@ for(j in 1:subsegment_num)
 	is.in <- (SNVlist)&(position>=region_start_loc)&(position<=region_end_loc)
 	seqSetFilter(genofile,variant.id=variant.id[is.in],sample.id=phenotype.id)
 
-	chrom <- seqGetData(genofile, "chromosome")
+	chr <- seqGetData(genofile, "chromosome")
 	pos <- as.integer(seqGetData(genofile, "position"))
 	ref <- unlist(lapply(strsplit(seqGetData(genofile, "allele"),","),`[[`,1))
 	alt <- unlist(lapply(strsplit(seqGetData(genofile, "allele"),","),`[[`,2))
@@ -207,7 +207,7 @@ for(j in 1:subsegment_num)
 
 	if(!is.null(genotype))
 	{
-		variant_info <- data.frame(chrom,pos,ref,alt)
+		variant_info <- data.frame(chr,pos,ref,alt)
 
 		results_temp <- NULL
 		results_temp <- MetaSTAAR_worker_sumstat(genotype,nullobj,variant_info)
