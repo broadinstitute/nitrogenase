@@ -209,8 +209,11 @@ for(j in 1:subsegment_num)
 	{
 		variant_info <- data.frame(chr,pos,ref,alt)
 
+		logDebug("variant_info", variant_info)
+
 		results_temp <- NULL
 		results_temp <- MetaSTAAR_worker_sumstat(genotype,nullobj,variant_info)
+		logDebug("results_temp", results_temp)
 		summary_stat <- rbind(summary_stat,results_temp)
 	}
 }
