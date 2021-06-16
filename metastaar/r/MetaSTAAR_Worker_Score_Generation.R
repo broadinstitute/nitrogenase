@@ -220,6 +220,11 @@ for(j in 1:subsegment_num)
 
 ## save results
 logDebug("summary_stat", summary_stat)
+logDebug("summary_stat$chr", summary_stat$chr)
+print("Turning summary_stat$chr to character")
+summary_stat$chr <- as.character(summary_stat$chr)
+logDebug("summary_stat", summary_stat)
+logDebug("summary_stat$chr", summary_stat$chr)
 if(output_format == "parquet") {
 	write_sumstat_parquet(
 		summary_stat,
