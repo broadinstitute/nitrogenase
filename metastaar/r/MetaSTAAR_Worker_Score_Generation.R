@@ -14,6 +14,7 @@ library(dplyr)
 library(parallel)
 library(arrow)
 
+options(stringsAsFactors = FALSE)
 options(error=function()traceback(2))
 
 ############################################################
@@ -30,14 +31,16 @@ valueDebug <- function(value) {
 			value_string <- paste0("[", paste0(value[1:100], collapse=", "), ", ...]:", typeof(value))
 		}
 	} else if(is.list(value)) {
-		fun <- function (element) {
-			return(paste0(typeof(element), "[", length(element), "]"))
+		names <- names(value)
+		fun <- function (name) {
+			element <- value[[name]]
+			return(paste0(name, ":", typeof(element), "[", length(element), "]"))
 		}
 		if(length(list) < 51) {
-			value_string <- paste0("[", paste0(sapply(value, fun), collapse=", "), "]: list[", length(value), "]")
+			value_string <- paste0("[", paste0(sapply(names, fun), collapse=", "), "]: list[", length(value), "]")
 		} else {
 			value_string <-
-				paste0("[", paste0(sapply(value[1:50], fun), collapse=", "), ", ...]: list[", length(value), "]")
+				paste0("[", paste0(sapply(names[1:50], fun), collapse=", "), ", ...]: list[", length(value), "]")
 		}
 	} else {
 		value_string <- paste0("??? (typeof=", typeof(value), ", length=", length(value), ")")
@@ -192,6 +195,11 @@ for(j in 1:subsegment_num)
 	ref <- unlist(lapply(strsplit(seqGetData(genofile, "allele"),","),`[[`,1))
 	alt <- unlist(lapply(strsplit(seqGetData(genofile, "allele"),","),`[[`,2))
 
+	logDebug("chr", chr)
+	logDebug("pos", pos)
+	logDebug("ref", ref)
+	logDebug("alt", alt)
+
 	## genotype id
 	id.genotype <- seqGetData(genofile,"sample.id")
 
@@ -225,6 +233,9 @@ print("Turning summary_stat$chr to character")
 summary_stat$chr <- as.character(summary_stat$chr)
 logDebug("summary_stat", summary_stat)
 logDebug("summary_stat$chr", summary_stat$chr)
+logDebug("summary_stat$pos", summary_stat$pos)
+logDebug("summary_stat$ref", summary_stat$ref)
+logDebug("summary_stat$alt", summary_stat$alt)
 if(output_format == "parquet") {
 	write_sumstat_parquet(
 		summary_stat,
