@@ -15,7 +15,7 @@ library(parallel)
 library(arrow)
 
 options(stringsAsFactors = FALSE)
-options(error=function()traceback(2))
+options(error=function() { traceback(2); quit(status=19) } )
 
 ############################################################
 #                     User Input
@@ -213,8 +213,7 @@ for(j in 1:subsegment_num)
 	genotype <- genotype[id.genotype.match,,drop=FALSE]
 	logDebug("genotype", genotype)
 
-	if(!is.null(genotype))
-	{
+	if(!is.null(genotype)) {
 		variant_info <- data.frame(chr,pos,ref,alt)
 
 		logDebug("variant_info", variant_info)
@@ -223,6 +222,9 @@ for(j in 1:subsegment_num)
 		results_temp <- MetaSTAAR_worker_sumstat(genotype,nullobj,variant_info)
 		logDebug("results_temp", results_temp)
 		summary_stat <- rbind(summary_stat,results_temp)
+	} else {
+		print("genotype is NULL - assuming no selected variants in this segment.")
+		quit(status=0)
 	}
 }
 

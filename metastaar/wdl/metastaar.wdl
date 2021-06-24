@@ -58,7 +58,7 @@ task calculate_summary_stats {
     }
     runtime {
 #        preemptible: 3
-        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.4.0"
+        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.4.1"
         cpu: 1
         memory: "9 GB"
         disks: "local-disk 20 HDD"
@@ -69,6 +69,10 @@ task calculate_summary_stats {
         Rscript --verbose /r/MetaSTAAR_Worker_Score_Generation.R --i ~{segment}  \
           --gds ~{genotypes_file} --null-model ~{null_model_file}  --out ~{output_file_name}  \
         --output-format ~{output_format}
+        if [ ! -f "~{output_file_name}" ]; then
+          echo "No output file ~{output_file_name}, creating empty mock file."
+          touch ~{output_file_name}
+        fi
         echo "Done calculating summary statistics"
     >>>
     output {
@@ -87,9 +91,9 @@ task calculate_covariances {
     }
     runtime {
 #        preemptible: 3
-        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.4.0"
+        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.4.1"
         cpu: 1
-        memory: "8 GB"
+        memory: "16 GB"
         disks: "local-disk 20 HDD"
     }
     command <<<
@@ -98,6 +102,10 @@ task calculate_covariances {
         Rscript --verbose /r/MetaSTAAR_Worker_Cov_Generation.R --i ~{segment}  \
           --gds ~{genotypes_file} --null-model ~{null_model_file}  --out ~{output_file_name}  \
           --maf-cutoff ~{maf_cutoff} --output-format ~{output_format}
+        if [ ! -f "~{output_file_name}" ]; then
+          echo "No output file ~{output_file_name}, creating empty mock file."
+          touch ~{output_file_name}
+        fi
         echo "Done calculating covariances"
     >>>
     output {

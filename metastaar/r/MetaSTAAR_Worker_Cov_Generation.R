@@ -14,7 +14,7 @@ library(dplyr)
 library(parallel)
 library(arrow)
 
-options(error=function()traceback(2))
+options(error=function() { traceback(2); quit(status=19) } )
 
 ############################################################
 #                     User Input
@@ -272,6 +272,10 @@ if(MAF_sub_seq_num > 0)
 }
 
 logDebug("genotype", genotype)
+if(is.null(genotype)) {
+	print("Genotype is NULL - assuming no selected variants in this segment.")
+	quit(status=0)
+}
 GTSinvG_rare <- NULL
 GTSinvG_rare <- MetaSTAAR_worker_cov(genotype, obj_nullmodel = nullobj, cov_maf_cutoff = cov_maf_cutoff, variant_pos,
 										 region_midpos, segment.size)
