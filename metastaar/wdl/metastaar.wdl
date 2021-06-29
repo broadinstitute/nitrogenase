@@ -60,7 +60,7 @@ task calculate_summary_stats {
 #        preemptible: 3
         docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.4.1"
         cpu: 1
-        memory: "9 GB"
+        memory: "16 GB"
         disks: "local-disk 20 HDD"
     }
     command <<<
@@ -93,7 +93,7 @@ task calculate_covariances {
 #        preemptible: 3
         docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.4.1"
         cpu: 1
-        memory: "16 GB"
+        memory: "64 GB"
         disks: "local-disk 20 HDD"
     }
     command <<<
