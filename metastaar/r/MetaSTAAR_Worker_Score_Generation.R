@@ -168,7 +168,7 @@ position <- as.integer(seqGetData(genofile, "position"))
 max_position <- max(position)
 logDebug("max_position", max_position)
 
-segment.size <- 5e5
+segment.size <- 1e5
 segment.num <- ceiling(max_position/segment.size)
 logDebug("segment.num", segment.num)
 
