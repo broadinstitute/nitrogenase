@@ -6,7 +6,7 @@
       "chromosome": "22",
       "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr22.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
       "segs_from": 1,
-      "segs_to": 10
+      "segs_to": 509
     }
   ],
   "metastaar.output_file_prefix_sum_stats": "summary_statistics",

@@ -1,0 +1,13 @@
+[package]
+name = "vali"
+description = "App to validate MetaSTAAR results for TOPMed"
+version = "0.0.1"
+authors = ["Oliver Ruebenacker <oliverr@broadinstitute.org>"]
+edition = "2018"
+repository = "https://github.com/broadinstitute/nitrogenase"
+license = "BSD-3-Clause"
+
+[dependencies]
+clap = "2.33.3"
+fs-err = "2.6.0"
+parquet = "5.3.0"
