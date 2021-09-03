@@ -1,11 +1,11 @@
-use crate::config::BrowseParquetConfig;
+use crate::config::ParquetBrowseConfig;
 use crate::util::error::Error;
 use std::fs::File;
 use parquet::file::serialized_reader::SerializedFileReader;
 use parquet::file::reader::FileReader;
 
-pub(crate) fn run_browse_parquet(browse_parquet_config: BrowseParquetConfig) -> Result<(), Error> {
-    let parquet_file = browse_parquet_config.parquet_file;
+pub(crate) fn run_parquet_browse(config: ParquetBrowseConfig) -> Result<(), Error> {
+    let parquet_file = config.parquet_file;
     let reader =
         SerializedFileReader::new(File::open(parquet_file)?)?;
     let metadata = reader.metadata();
@@ -13,5 +13,6 @@ pub(crate) fn run_browse_parquet(browse_parquet_config: BrowseParquetConfig) -> 
     for field in fields {
         print!("{} ({}), ", field.name(), field.get_physical_type())
     }
+    println!();
     Ok(())
 }

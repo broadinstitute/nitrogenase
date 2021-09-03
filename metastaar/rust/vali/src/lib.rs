@@ -4,11 +4,15 @@ use crate::config::Config;
 mod util;
 mod config;
 mod browse;
+mod extract;
 
 pub fn run() -> Result<(), Error> {
     match config::get_config()? {
-        Config::BrowseParquet(browse_parquet) => {
-            browse::run::run_browse_parquet(browse_parquet)
+        Config::ParquetBrowse(parquet_browse_config) => {
+            browse::run::run_parquet_browse(parquet_browse_config)
+        }
+        Config::ParquetGetPBeta(parquet_get_p_beta_config) => {
+            extract::run::run_parquet_get_p_beta(parquet_get_p_beta_config)
         }
     }
 }
