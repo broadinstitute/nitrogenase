@@ -4,17 +4,18 @@ use std::fs::File;
 use parquet::file::serialized_reader::SerializedFileReader;
 use parquet::file::reader::FileReader;
 use parquet::schema::types::{Type, TypePtr};
-use parquet::record::Row;
+use parquet::record::{Row, RowAccessor};
 use crate::records::Record;
-use crate::stats::PB;
+use crate::stats::{PB, UV};
+use crate::records::Variant;
 
 mod needed_fields {
     pub(crate) const CHR: &str = "chr";
-    const POS: &str = "pos";
-    const REF: &str = "ref";
-    const ALT: &str = "alt";
-    const U: &str = "U";
-    const V: &str = "V";
+    pub(crate) const POS: &str = "pos";
+    pub(crate) const REF: &str = "ref";
+    pub(crate) const ALT: &str = "alt";
+    pub(crate) const U: &str = "U";
+    pub(crate) const V: &str = "V";
     thread_local!(pub(crate) static ALL: Vec<&'static str> = vec!(CHR, POS, REF, ALT, U, V));
 }
 
@@ -28,6 +29,11 @@ fn needed_fields_projection(all_fields: &[TypePtr]) -> Result<Type, Error> {
 
 struct ColIndices {
     i_chr: usize,
+    i_pos: usize,
+    i_ref: usize,
+    i_alt: usize,
+    i_u: usize,
+    i_v: usize,
 }
 
 fn missing_field_error(field_name: &str) -> Error {
@@ -36,21 +42,48 @@ fn missing_field_error(field_name: &str) -> Error {
 
 fn get_col_indices(selected_fields_group: &Type) -> Result<ColIndices, Error> {
     let mut i_chr_opt: Option<usize> = None;
+    let mut i_pos_opt: Option<usize> = None;
+    let mut i_ref_opt: Option<usize> = None;
+    let mut i_alt_opt: Option<usize> = None;
+    let mut i_u_opt: Option<usize> = None;
+    let mut i_v_opt: Option<usize> = None;
     let fields = selected_fields_group.get_fields();
-    for i in 0..fields.len() {
-        let field = &fields[i];
+    for (i, field) in fields.iter().enumerate() {
         match field.name() {
             needed_fields::CHR => { i_chr_opt = Some(i) }
+            needed_fields::POS => { i_pos_opt = Some(i) }
+            needed_fields::REF => { i_ref_opt = Some(i) }
+            needed_fields::ALT => { i_alt_opt = Some(i) }
+            needed_fields::U => { i_u_opt = Some(i) }
+            needed_fields::V => { i_v_opt = Some(i) }
             name => { panic!("Unexpected field {}.", name) }
         }
     }
     let i_chr =
         i_chr_opt.ok_or_else(|| { missing_field_error(needed_fields::CHR) })?;
-    Ok(ColIndices { i_chr })
+    let i_pos =
+        i_pos_opt.ok_or_else(|| { missing_field_error(needed_fields::POS) })?;
+    let i_ref =
+        i_ref_opt.ok_or_else(|| { missing_field_error(needed_fields::REF) })?;
+    let i_alt =
+        i_alt_opt.ok_or_else(|| { missing_field_error(needed_fields::ALT) })?;
+    let i_u =
+        i_u_opt.ok_or_else(|| { missing_field_error(needed_fields::U) })?;
+    let i_v =
+        i_v_opt.ok_or_else(|| { missing_field_error(needed_fields::V) })?;
+    Ok(ColIndices { i_chr, i_pos, i_ref, i_alt, i_u, i_v })
 }
 
 fn record_from_row(row: &Row, col_indices: &ColIndices) -> Result<Record<PB>, Error> {
-    todo!()
+    let chr = String::from(row.get_bytes(col_indices.i_chr)?.as_utf8()?);
+    let pos = row.get_int(col_indices.i_pos)?;
+    let ref_allele = String::from(row.get_bytes(col_indices.i_ref)?.as_utf8()?);
+    let alt_allele = String::from(row.get_bytes(col_indices.i_alt)?.as_utf8()?);
+    let variant = Variant::new(chr, pos, ref_allele, alt_allele);
+    let u = row.get_double(col_indices.i_u)?;
+    let v = row.get_double(col_indices.i_v)?;
+    let pb = PB::from(UV::new(u, v));
+    Ok(Record::new(variant, pb))
 }
 
 pub(crate) fn run_parquet_get_p_beta(config: ParquetGetPBetaConfig) -> Result<(), Error> {

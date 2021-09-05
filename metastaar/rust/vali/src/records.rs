@@ -1,18 +1,22 @@
-struct Variant {
+pub(crate) struct Variant {
     chr: String,
     pos: i32,
-    ref_allele: Vec<u8>,
-    alt_allele: Vec<u8>
+    ref_allele: String,
+    alt_allele: String,
 }
 
 impl Variant {
-    fn new(chr: String, pos: i32, ref_allele: Vec<u8>, alt_allele: Vec<u8>) -> Variant {
-        Variant { chr, pos, ref_allele, alt_allele}
+    pub(crate) fn new(chr: String, pos: i32, ref_allele: String, alt_allele: String) -> Variant {
+        Variant { chr, pos, ref_allele, alt_allele }
     }
 }
 
 pub(crate) struct Record<T> {
     variant: Variant,
-    item: T
+    item: T,
+}
+
+impl<T> Record<T> {
+    pub(crate) fn new(variant: Variant, item: T) -> Record<T> { Record { variant, item } }
 }
 

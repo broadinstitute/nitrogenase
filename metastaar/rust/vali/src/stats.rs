@@ -1,12 +1,12 @@
 use statrs::distribution::{Normal, ContinuousCDF};
 
-struct UV {
+pub(crate) struct UV {
     u: f64,
     v: f64,
 }
 
 impl UV {
-    fn new(u: f64, v: f64) -> UV { UV { u, v } }
+    pub(crate) fn new(u: f64, v: f64) -> UV { UV { u, v } }
 }
 
 pub(crate) struct PB {
