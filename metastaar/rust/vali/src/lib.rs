@@ -5,6 +5,8 @@ mod util;
 mod config;
 mod browse;
 mod extract;
+mod records;
+mod stats;
 
 pub fn run() -> Result<(), Error> {
     match config::get_config()? {
