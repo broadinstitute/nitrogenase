@@ -1,12 +1,12 @@
 pub(crate) struct Variant {
     chr: String,
-    pos: i32,
+    pos: u32,
     ref_allele: String,
     alt_allele: String,
 }
 
 impl Variant {
-    pub(crate) fn new(chr: String, pos: i32, ref_allele: String, alt_allele: String) -> Variant {
+    pub(crate) fn new(chr: String, pos: u32, ref_allele: String, alt_allele: String) -> Variant {
         Variant { chr, pos, ref_allele, alt_allele }
     }
 }

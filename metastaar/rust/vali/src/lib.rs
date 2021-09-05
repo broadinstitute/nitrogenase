@@ -7,6 +7,7 @@ mod browse;
 mod extract;
 mod records;
 mod stats;
+mod metastaar;
 
 pub fn run() -> Result<(), Error> {
     match config::get_config()? {
