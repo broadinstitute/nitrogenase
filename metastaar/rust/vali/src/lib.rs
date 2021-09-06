@@ -8,6 +8,7 @@ mod extract;
 mod records;
 mod stats;
 mod metastaar;
+mod tsv;
 
 pub fn run() -> Result<(), Error> {
     match config::get_config()? {

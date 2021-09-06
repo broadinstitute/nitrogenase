@@ -15,7 +15,7 @@ pub(crate) struct PB {
 }
 
 impl PB {
-    fn new(p: f64, b: f64) -> PB { PB { p, b } }
+    pub(crate) fn new(p: f64, b: f64) -> PB { PB { p, b } }
 }
 
 thread_local!(static NORMAL_DIST: Normal = Normal::new(0.0, 1.0).unwrap());
