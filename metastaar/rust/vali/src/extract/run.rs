@@ -1,19 +1,12 @@
 use crate::config::ParquetGetPBetaConfig;
 use crate::util::error::Error;
-use std::fs::File;
-use parquet::file::serialized_reader::SerializedFileReader;
-use parquet::file::reader::FileReader;
-use parquet::schema::types::{Type, TypePtr};
-use parquet::record::{Row, RowAccessor};
-use crate::records::Record;
-use crate::stats::{PB, UV};
-use crate::records::Variant;
+use crate::records::{Record, Variant};
+use crate::stats::PB;
 use crate::metastaar::sumstats::SumStats;
-use std::iter::Iterator;
 use crate::tsv::writer::TSVWriter;
 
 fn get_header_line() -> String {
-    String::from("id\tchr\tpos\tref\talt\tp\t-log(p)\tbeta")
+    format!("{}\tp\t-log(p)\tbeta", Variant::header_line())
 }
 
 fn get_data_line(record: Record<PB>) -> String {

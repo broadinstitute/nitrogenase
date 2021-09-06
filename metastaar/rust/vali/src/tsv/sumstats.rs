@@ -4,6 +4,7 @@ use std::io::{BufReader, BufRead, Lines};
 use crate::stats::PB;
 use crate::records::{Record, Variant};
 use std::fmt::Display;
+use std::io;
 
 mod field_names {
     pub(crate) const CHR: &str = "CHR";
@@ -97,7 +98,7 @@ fn record_from_line(line: &str, col_indices: &ColIndices) -> Result<Record<PB>, 
     let ref_allele = unpack_opt(ref_allele_opt, field_names::REF)?;
     let alt_allele = unpack_opt(alt_allele_opt, field_names::ALT)?;
     let p = unpack_opt(p_opt, field_names::P)?;
-    let b = unpack_opt(p_opt, field_names::B)?;
+    let b = unpack_opt(b_opt, field_names::B)?;
     let variant = Variant::new(chr, pos, ref_allele, alt_allele);
     let pb = PB::new(p, b);
     Ok(Record::new(variant, pb))
@@ -114,10 +115,16 @@ impl SumStats {
     }
 }
 
+fn record_from_line_res(line_res: io::Result<String>, col_indices: &ColIndices) -> Result<Record<PB>, Error> {
+    record_from_line(&line_res?, col_indices)
+}
+
 impl Iterator for SumStats {
     type Item = Result<Record<PB>, Error>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        todo!()
+        self.lines.next().map(|line_res|{
+            record_from_line_res(line_res, &self.col_indices)
+        })
     }
 }

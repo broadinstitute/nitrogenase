@@ -18,7 +18,7 @@ impl Variant {
     }
     pub(crate) fn line(&self) -> String {
         format!("{}\t{}\t{}\t{}\t{}", self.id(), self.chr, self.pos, self.ref_allele,
-                self.ref_allele)
+                self.alt_allele)
     }
 }
 
