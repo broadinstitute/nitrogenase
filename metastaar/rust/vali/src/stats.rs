@@ -10,8 +10,8 @@ impl UV {
 }
 
 pub(crate) struct PB {
-    p: f64,
-    b: f64,
+    pub(crate) p: f64,
+    pub(crate) b: f64,
 }
 
 impl PB {

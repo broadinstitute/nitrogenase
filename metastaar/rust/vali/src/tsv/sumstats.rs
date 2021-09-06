@@ -35,7 +35,7 @@ fn get_col_indices(header_line: String) -> Result<ColIndices, Error> {
     let mut i_alt_opt: Option<usize> = None;
     let mut i_p_opt: Option<usize> = None;
     let mut i_b_opt: Option<usize> = None;
-    for (i, field_name) in header_line.split("\t").enumerate() {
+    for (i, field_name) in header_line.split('\t').enumerate() {
         match field_name {
             field_names::CHR => { i_chr_opt = Some(i) }
             field_names::POS => { i_pos_opt = Some(i) }
@@ -77,7 +77,7 @@ fn record_from_line(line: &str, col_indices: &ColIndices) -> Result<Record<PB>, 
     let mut alt_allele_opt: Option<String> = None;
     let mut p_opt: Option<f64> = None;
     let mut b_opt: Option<f64> = None;
-    for (i, field) in line.split("\t").enumerate() {
+    for (i, field) in line.split('\t').enumerate() {
         if i == col_indices.i_chr {
             chr_opt = Some(String::from(field));
         } else if i == col_indices.i_pos {
