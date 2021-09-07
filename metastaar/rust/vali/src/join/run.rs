@@ -136,7 +136,7 @@ pub(crate) fn run_parquet_tsv_beta_p_join(config: ParquetTsvPBetaJoinConfig) -> 
     let mut parquet_cache = Vec::<Record<PB>>::new();
     let mut tsv_cache = Vec::<Record<PB>>::new();
     while (!parquet_records_exhausted) || (!tsv_records_exhausted) {
-        let pos = std::cmp::max(pos_parquet, pos_tsv);
+        let pos = std::cmp::min(pos_parquet, pos_tsv);
         if pos_parquet <= pos {
             read_record(&mut parquet_records, &mut parquet_cache,
                         &mut parquet_records_exhausted, &mut pos_parquet, chr)?;
@@ -148,9 +148,11 @@ pub(crate) fn run_parquet_tsv_beta_p_join(config: ParquetTsvPBetaJoinConfig) -> 
         let joined_records =
             join_records(&mut parquet_cache, &mut tsv_cache);
         write_all_joined(&mut joined_writer, joined_records)?;
-        let parquet_only_records = remove_records_before(&mut parquet_cache, pos);
+        let parquet_only_records =
+            remove_records_before(&mut parquet_cache, pos);
         write_all_only(&mut parquet_only_writer, parquet_only_records)?;
-        let tsv_only_records = remove_records_before(&mut tsv_cache, pos);
+        let tsv_only_records =
+            remove_records_before(&mut tsv_cache, pos);
         write_all_only(&mut tsv_only_writer, tsv_only_records)?;
     }
     write_all_only(&mut parquet_only_writer, parquet_cache)?;

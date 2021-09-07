@@ -1,7 +1,7 @@
 [package]
 name = "vali"
 description = "App to validate MetaSTAAR results for TOPMed"
-version = "1.0.1"
+version = "1.0.2"
 authors = ["Oliver Ruebenacker <oliverr@broadinstitute.org>"]
 edition = "2018"
 repository = "https://github.com/broadinstitute/nitrogenase"
