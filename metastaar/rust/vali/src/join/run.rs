@@ -46,7 +46,7 @@ fn join_records(cache1: &mut Vec<Record<PB>>, cache2: &mut Vec<Record<PB>>)
     while keep_searching {
         let mut records_match: Option<(usize, usize)> = None;
         'outer: for (i1, record1) in cache1.iter().enumerate() {
-            for (i2, record2) in cache1.iter().enumerate() {
+            for (i2, record2) in cache2.iter().enumerate() {
                 if record1.variant == record2.variant {
                     records_match = Some((i1, i2));
                     break 'outer;
