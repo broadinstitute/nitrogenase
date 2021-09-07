@@ -17,6 +17,7 @@ fn read_record<I: Iterator<Item=Result<Record<PB>, Error>>>(records_iter: &mut I
         match records_iter.next() {
             None => {
                 *is_exhausted = true;
+                *pos = u32::MAX;
             }
             Some(record_res) => {
                 let record = record_res?;
