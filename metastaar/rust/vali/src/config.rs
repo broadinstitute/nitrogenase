@@ -180,8 +180,8 @@ pub(crate) fn get_config() -> Result<Config, Error> {
                                            parquet_only_file, tsv_only_file)
         ))
     } else {
-        Err(Error::from(format!("Need to specify subcommand ({} or {})",
-                                PARQUET_BROWSE, PARQUET_GET_P_BETA)))
+        Err(Error::from(format!("Need to specify subcommand ({}, {} or {})",
+                                PARQUET_BROWSE, PARQUET_GET_P_BETA, PARQUET_TSV_P_BETA_JOIN)))
     }
 }
 
