@@ -57,7 +57,7 @@ task calculate_summary_stats {
         String output_format
     }
     runtime {
-#        preemptible: 3
+        preemptible: 3
         docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.5.0"
         cpu: 1
         memory: "16 GB"
@@ -90,7 +90,7 @@ task calculate_covariances {
         String output_format
     }
     runtime {
-#        preemptible: 3
+        preemptible: 3
         docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.5.0"
         cpu: 1
         memory: "16 GB"

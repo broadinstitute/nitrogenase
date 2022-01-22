@@ -3,6 +3,132 @@
   "metastaar.covariances_maf_cutoff": 0.05,
   "metastaar.chromosome_segments_list": [
     {
+      "chromosome": "1",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr1.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 2490
+    },
+    {
+      "chromosome": "2",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr2.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 2422
+    },
+    {
+      "chromosome": "3",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr3.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 1983
+    },
+    {
+      "chromosome": "4",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr4.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 1903
+    },
+    {
+      "chromosome": "5",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr5.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 1816
+    },
+    {
+      "chromosome": "6",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr6.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 1709
+    },
+    {
+      "chromosome": "7",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr7.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 1594
+    },
+    {
+      "chromosome": "8",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr8.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 1452
+    },
+    {
+      "chromosome": "9",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr9.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 1384
+    },
+    {
+      "chromosome": "10",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr10.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 1338
+    },
+    {
+      "chromosome": "11",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr11.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 1351
+    },
+    {
+      "chromosome": "12",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr12.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 1333
+    },
+    {
+      "chromosome": "13",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr13.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 1144
+    },
+    {
+      "chromosome": "14",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr14.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 1071
+    },
+    {
+      "chromosome": "15",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr15.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 1020
+    },
+    {
+      "chromosome": "16",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr16.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 904
+    },
+    {
+      "chromosome": "17",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr17.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 833
+    },
+    {
+      "chromosome": "18",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr18.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 804
+    },
+    {
+      "chromosome": "19",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr19.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 587
+    },
+    {
+      "chromosome": "20",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr20.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 645
+    },
+    {
+      "chromosome": "21",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr21.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 468
+    },
+    {
       "chromosome": "22",
       "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr22.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
       "segs_from": 1,
