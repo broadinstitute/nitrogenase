@@ -241,14 +241,15 @@ if(MAF_sub_seq_num > 0)
 			invisible(capture.output(seqSetFilter(genofile,variant.id=variant.id.sub.rare[is.in.sub.rare],sample.id=phenotype.id)))
 
 			AF_sub <- AF[is.in.sub.rare]
-		}
-
-		if(jj==RV_sub_seq_num)
+		}else if(jj==RV_sub_seq_num)
 		{
 			is.in.sub.rare <- ((jj-1)*RV_sub_num+1):length(variant.id.sub.rare)
 			invisible(capture.output(seqSetFilter(genofile,variant.id=variant.id.sub.rare[is.in.sub.rare],sample.id=phenotype.id)))
 
 			AF_sub <- AF[is.in.sub.rare]
+		}else
+		{
+			break
 		}
 
 		## Genotype
