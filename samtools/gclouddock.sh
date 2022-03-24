@@ -9,6 +9,6 @@ full="gcr.io/${project}/${image}"
 gcloud builds submit --timeout=60m --tag $full
 arg1=$1
 if [ -n "$arg1" ];then
-  docker run $full "$arg1"
+  docker run -it $full "$arg1"
 fi
 echo "Done with $full $arg1"
