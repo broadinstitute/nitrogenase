@@ -2,16 +2,19 @@ version 1.0
 
 workflow merge_bams {
     input {
+        Array[File] input_files
         String output_file_name
     }
     call merge_bams_samtools {
         input:
+            input_files = input_files,
             output_file_name = output_file_name
     }
 }
 
 task merge_bams_samtools {
     input {
+        Array[File] input_files
         String output_file_name
     }
     runtime {
@@ -23,8 +26,9 @@ task merge_bams_samtools {
     }
     command <<<
         set -e
-        echo "Now calculating summary statistics"
-        samtools
+        echo "Now merging BAM files."
+        samtools merge ~{output_file_name} ~{sep=' ' input_files}
+        echo "Done"
     >>>
     output {
         File output_file = output_file_name
