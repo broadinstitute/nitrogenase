@@ -2,13 +2,13 @@ version 1.0
 
 workflow merge_bams {
     input {
+        String sample_id
         Array[File] input_files
-        String output_file_name
     }
     call merge_bams_samtools {
         input:
-            input_files = input_files,
-            output_file_name = output_file_name
+            output_file_name = sample_id + ".unmapped.bam",
+            input_files = input_files
     }
 }
 
@@ -22,7 +22,7 @@ task merge_bams_samtools {
         docker: "gcr.io/nitrogenase-docker/nitrogenase-samtools:1.0.0"
         cpu: 1
         memory: "16 GB"
-        disks: "local-disk 20 HDD"
+        disks: "local-disk 32 HDD"
     }
     command <<<
         set -e
