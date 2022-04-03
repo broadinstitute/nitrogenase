@@ -1,18 +1,18 @@
 version 1.0
 
-workflow sort_sam {
+workflow revert_sam {
     input {
         File input_file
         String sample_id
     }
-    call sort_sam {
+    call revert_sam {
         input:
             input_file = input_file,
             output_file_name = sample_id + ".unmapped.bam",
     }
 }
 
-task sort_sam {
+task revert_sam {
     input {
         File input_file
         String output_file_name
@@ -22,13 +22,12 @@ task sort_sam {
         docker: "broadinstitute/picard"
         cpu: 1
         memory: "16 GB"
-        disks: "local-disk 96 HDD"
+        disks: "local-disk 24 HDD"
     }
     command <<<
-        java -jar /usr/picard/picard.jar SortSam \
+        java -jar /usr/picard/picard.jar RevertSam \
             I=~{input_file} \
-            O=~{output_file_name} \
-            SORT_ORDER=queryname
+            O=~{output_file_name}
     >>>
     output {
         File output_file = output_file_name
