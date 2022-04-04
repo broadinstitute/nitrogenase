@@ -22,7 +22,7 @@ task revert_sam {
         docker: "broadinstitute/picard"
         cpu: 1
         memory: "16 GB"
-        disks: "local-disk 24 HDD"
+        disks: "local-disk 64 HDD"
     }
     command <<<
         java -jar /usr/picard/picard.jar RevertSam \
