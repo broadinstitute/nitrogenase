@@ -1,0 +1,6 @@
+able[20]=norm(0.0,23),0.6,bin(0.1,special,normal)
+foobar[20]=norm(0.0,1.0),0.7,bin(0.2,foo,bar)
+real[20]=norm(0.0,1.0),0.5,bin(0.3,yes,no)
+accept[20]=pick(0.01,norm(0.0,1.0),0.99,0.0),0.5,bin(0.3,bad,ok)
+color[20]=pick(0.01,norm(0.0,1.0),0.1,norm(0,0.1),0.89,0.0),0.3,bin(0.3,red,green)
+quantity[20]=norm(0.0,1.0),0.2

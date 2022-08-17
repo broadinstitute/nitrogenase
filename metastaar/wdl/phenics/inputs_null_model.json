@@ -3,7 +3,7 @@
   "null_model.phenotype": "able0",
   "null_model.sample_id_field": "id",
   "null_model.phenotype_is_binary": true,
-  "null_model.covariates": [],
+  "null_model.covariates": ["able7", "able8", "able9"],
   "null_model.kinship_matrix_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/freeze.5b.auto.pass.gtonly.minDP10.mmap.grm.DP.fixed.0.001.cor_SparseGRM_grmPCrelate_0625.Rda",
   "null_model.out_file_name": "null_model.Rdata"
 }

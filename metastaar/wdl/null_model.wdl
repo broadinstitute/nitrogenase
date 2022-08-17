@@ -44,8 +44,11 @@ task calculate_null_model {
     String covariates_prefix = if length(covariates) == 0 then "" else "--covariates"
     command <<<
         set -e
+        echo "Cleanup phenotype file"
+        grep -v "^##" ~{phenotype_file} | sed 's/^#//g' | sed 's/\t/,/g' > phenotype_file_cleaned
         echo "Now calculating null model"
-        Rscript --verbose /r/STAAR_null_model.R --phenotype-file ~{phenotype_file} --sample-id ~{sample_id_field} \
+        Rscript --verbose /r/STAAR_null_model.R --phenotype-file phenotype_file_cleaned \
+            --sample-id ~{sample_id_field} \
             --phenotype ~{phenotype} ~{"--groups" + groups} ~{"--grm " + kinship_matrix_file} \
             ~{if phenotype_is_binary then "--binary" else "" }  \
             ~{covariates_prefix} ~{sep="," covariates} --output ~{out_file_name}
