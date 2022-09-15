@@ -5,7 +5,7 @@ task vcf2gds {
     input {
         File vcf
         String debug_basename = basename(vcf)
-        String debug_basenamesub = basename(sub(vcf, "\.vcf\.gz(?!.{1,})|\.vcf\.bgz(?!.{5,})|\.vcf(?!.{5,})|\.bcf(?!.{1,})", ".gds"))
+        String debug_basenamesub = basename(sub(vcf, "\\.vcf\\.gz(?!.{1,})|\\.vcf\\.bgz(?!.{5,})|\\.vcf(?!.{5,})|\\.bcf(?!.{1,})", ".gds"))
         Array[String] format # vcf formats to keep
 
         # runtime attributes
