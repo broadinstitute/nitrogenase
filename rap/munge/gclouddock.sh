@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 project="nitrogenase-docker"
 name="nitrogenase-r-munge"
-tag="0.1.3"
+tag="0.1.4"
 image="${name}:${tag}"
 echo "Using Google project ${project}, Docker project ${name}, image tag ${image}"
 echo "Cloud-building Docker image:"
