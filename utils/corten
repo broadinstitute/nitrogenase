@@ -1,0 +1,58 @@
+set -e
+
+if [ ! -f "Dockerfile" ]; then
+    echo "No Dockerfile in current directory."
+    exit 1
+fi
+
+subcommand="$1"
+
+if [ "$subcommand" == "about" ]; then
+    echo "This is corten"
+  if [ -f "$HOME/.cortenrc" ]; then
+    . "$HOME/.cortenrc"
+  fi
+  if [ -f ".cortenrc" ]; then
+    . .cortenrc
+  fi
+  echo "project=$project"
+  echo "name=$name"
+  echo "tag=$tag"
+  echo "Done!"
+elif [ "$subcommand" == "build" ]; then
+  echo "Building Docker image"
+  docker build . -t temp
+elif [ "$subcommand" == "bash" ]; then
+  echo "Building Docker image and launching Bash"
+  docker build . -t temp
+  docker run -it temp:latest bash
+elif [ "$subcommand" == "submit" ]; then
+  if [ -f "$HOME/.cortenrc" ]; then
+    . "$HOME/.cortenrc"
+  fi
+  if [ -f ".cortenrc" ]; then
+    . .cortenrc
+  fi
+  if [ -z "$project" ]; then
+    echo "No project defined in .cortenrc or $HOME/.cortenrc."
+    exit 1
+  fi
+  if [ -z "$name" ]; then
+    echo "No name defined in .cortenrc or $HOME/.cortenrc."
+    exit 1
+  fi
+  if [ -z "$tag" ]; then
+    echo "No tag defined in .cortenrc or $HOME/.cortenrc."
+    exit 1
+  fi
+  image="${name}:${tag}"
+  echo "Using Google project ${project}, image name ${name}, image tag ${image}"
+  echo "Cloud-building Docker image:"
+  full="gcr.io/${project}/${image}"
+  echo "Full tag is '$full'"
+  gcloud builds submit --timeout=60m --tag "$full"
+  echo "Done submitting $full"
+else
+  echo "Need to provide subcommand 'about', 'build', 'bash' or 'submit'."
+fi
+
