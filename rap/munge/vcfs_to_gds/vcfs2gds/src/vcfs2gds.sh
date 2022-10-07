@@ -39,9 +39,10 @@ main() {
         vcf_files+=("$vcf_file")
     done
 
-    echo "All the files after downloads:"
-
-    ls -ralt
+    echo "Updates"
+    apt -y update
+    apt -y upgrade
+    echo "Done with updates"
 
     # Fill in your application code here.
     #
@@ -58,6 +59,13 @@ main() {
     # will be AppInternalError with a generic error message.
 
 cat <<- EOF > vcfs_to_gds.R
+install.packages("digest")
+
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+
+BiocManager::install("SeqArray")
+
 library(SeqArray)
 
 options(error = function() { traceback(2); quit(status = 19) })

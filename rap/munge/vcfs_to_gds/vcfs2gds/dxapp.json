@@ -3,7 +3,7 @@
   "title": "VCFs to GDS",
   "summary": "Convert VCF files into one GDS file",
   "dxapi": "1.0.0",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "inputSpec": [
     {
       "name": "vcfs",
@@ -38,6 +38,11 @@
     "distribution": "Ubuntu",
     "release": "20.04",
     "version": "0"
+  },
+  "access": {
+    "network": [
+      "*"
+    ]
   },
   "regionalOptions": {
     "aws:eu-west-2": {
