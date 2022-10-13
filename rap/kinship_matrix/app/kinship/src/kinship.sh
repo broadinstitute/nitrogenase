@@ -17,6 +17,8 @@
 
 main() {
 
+    set -e -x -v -u
+
     echo "Value of vcfs: '${vcfs[@]}'"
 
     # The following line(s) use the dx command-line tool to download your file
@@ -24,9 +26,14 @@ main() {
     # recover the original filenames, you can use the output of "dx describe
     # "$variable" --name".
 
+    vcf_files=()
+
     for i in ${!vcfs[@]}
     do
-        dx download "${vcfs[$i]}" -o vcfs-$i
+        vcf_file="input_${i}.vcf.gz"
+        dx download "${vcfs[$i]}" -o "$vcf_file"
+        vcf_files+=("$vcf_file")
+        ls -l "$vcf_file"
     done
 
     # Fill in your application code here.
@@ -42,6 +49,101 @@ main() {
     # exit code will prematurely exit the script; if no error was
     # reported in the job_error.json file, then the failure reason
     # will be AppInternalError with a generic error message.
+
+    apt -y update
+    apt -y upgrade
+
+    # Install prerequisites
+    # wget: download BEDOPS, KING
+    # bgzip2: unzip VCF files
+    # libquadmath0, libgomp1: needed by KING
+    # git: used to clone FastSparseGRM repo
+
+    apt -y install wget bzip2 libquadmath0 libgomp1 git
+
+    # Install bcftools
+
+    mkdir bcftools
+    cd bcftools
+    wget https://github.com/samtools/bcftools/releases/download/1.16/bcftools-1.16.tar.bz2
+    tar xvf bcftools-1.16.tar.bz2
+    cd bcftools-1.16
+    ./configure --prefix=/usr/local/
+    make
+    make install
+    cd ../..
+    rm -r bcftools
+
+    # Merge VCF files into single VCF file and split multiallelics using bcdtools
+
+    bcftools concat "${vcf_files[@]}" -o all.vcf.gz
+    bcftools norm -m- all.vcf.gz -o norm.vcf.gz
+    ls -ralt
+
+    # Install plink2
+
+    mkdir plink
+    cd plink
+    wget https://s3.amazonaws.com/plink2-assets/alpha3/plink2_linux_x86_64_20220814.zip
+    unzip plink2_linux_x86_64_20220814.zip
+    ls -ralt
+    mv plink2 /usr/local/bin/
+    cd ..
+    rm -r plink
+
+    # Diagnostics
+
+    zcat norm.vcf.gz | cut -f 1-30 | grep -v "##" | head -n 5
+
+    # Use plink2 to convert VCF to BED
+
+    plink2 --vcf norm.vcf.gz --make-bed --out all
+    ls -ralt
+
+    # Install KING
+
+    mkdir king
+    cd king
+    wget https://www.kingrelatedness.com/Linux-king.tar.gz
+    tar -xzvf Linux-king.tar.gz
+    rm Linux-king.tar.gz
+    mv king /usr/local/bin
+    cd ..
+    rm -r king
+
+    # Run KING
+
+    king -b all.bed --ibdseg --degree 4 --cpus 4 --prefix royal
+
+    # Install FastSparseGRM
+
+    mkdir fsgrm
+    cd fsgrm
+    git clone https://github.com/rounakdey/FastSparseGRM.git
+    mv FastSparseGRM/R/* .
+    mv FastSparseGRM/src/* .
+    rm -r FastSparseGRM
+    cd ..
+
+    # Use FastSparseGRM
+
+    ls -ralt
+    R CMD BATCH --vanilla \
+        '--args --prefix.in wgs --file.seg royal.seg --num_threads 4 --degree 4 --nRandomSNPs 0 --prefix.out div' \
+        fsgrm/getDivergence_wrapper.R fsgrm/getDivergence.Rout
+    ls -ralt
+    R CMD BATCH --vanilla \
+        '--args --prefix.in wgs --file.seg royal.seg --degree 4 --file.div div.div --prefix.out unrels' \
+        fsgrm/extractUnrelated_wrapper.R fsgrm/extractUnrelated.Rout
+    ls -ralt
+    R CMD BATCH --vanilla \
+        '--args --prefix.in wgs --file.unrels unrels --prefix.out pca --no_pcs 20 --num_threads 4' \
+        fsgrm/runPCA_wrapper.R fsgrm/runPCA.Rout
+    ls -ralt
+    R CMD BATCH --vanilla \
+        '--args --prefix.in wgs --prefix.out grm --file.train unrels --file.score score --file.seg royal.seg --num_threads 4 --no_pcs 20' \
+        fsgrm/calcSparseGRM_wrapper.R fsgrm/calcSparseGRM.Rout
+    ls -ralt
 
     # The following line(s) use the dx command-line tool to upload your file
     # outputs after you have created them on the local file system.  It assumes

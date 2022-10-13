@@ -2,7 +2,7 @@ FROM ubuntu:22.04
 
 WORKDIR fast_sparse_grm
 
-# Install KING
+# Install FastSparseGRM
 RUN apt-get -y update  && \
     apt-get -y upgrade  && \
     apt-get -y install git && \

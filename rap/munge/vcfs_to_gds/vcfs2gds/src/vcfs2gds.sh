@@ -17,6 +17,8 @@
 
 main() {
 
+    set -e -x -v -u -o pipefail
+
     echo "Let's go!"
 
     echo "Value of vcfs: '${vcfs[@]}'"
