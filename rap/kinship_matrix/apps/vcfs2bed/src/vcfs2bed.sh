@@ -84,12 +84,16 @@ main() {
         bed_prefix="bed_file_${i}"
         bcftools norm -m- "${vcf_files[$i]}" -o norm.vcf.gz
         plink2 --vcf norm.vcf.gz --make-bed --out "${bed_prefix}"
-        { echo "$bed_prefix.bed"; echo "$bed_prefix.bim"; echo "$bed_prefix.fam"; } >> bed_file_list
+        echo "$bed_prefix" >> bed_file_list
     done
 
     # Concat BED files into single BED file
 
-    plink2 --pmerge-list bed_file_list bfile --make-bed --out bed
+    if [ ${#vcf_files[@]} -eq 1 ]; then
+        mv bed_file_0.bed bed
+    else
+        plink2 --pmerge-list bed_file_list bfile --make-bed --out bed
+    fi
 
     # The following line(s) use the dx command-line tool to upload your file
     # outputs after you have created them on the local file system.  It assumes
