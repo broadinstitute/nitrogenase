@@ -74,7 +74,7 @@ main() {
     cd ../..
     rm -r bcftools
 
-    # Merge VCF files into single VCF file and split multiallelics using bcdtools
+    # Merge VCF files into single VCF file and split multiallelics using bcftools
 
     bcftools concat "${vcf_files[@]}" -o all.vcf.gz
     bcftools norm -m- all.vcf.gz -o norm.vcf.gz
