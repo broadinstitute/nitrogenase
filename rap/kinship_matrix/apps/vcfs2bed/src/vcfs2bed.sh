@@ -89,7 +89,7 @@ main() {
 
     # Concat BED files into single BED file
 
-    plink2 --pmerge-list bed_file_list --make-bed --out bed
+    plink2 --pmerge-list bed_file_list bfile --make-bed --out bed
 
     # The following line(s) use the dx command-line tool to upload your file
     # outputs after you have created them on the local file system.  It assumes
