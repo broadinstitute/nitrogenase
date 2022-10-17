@@ -84,7 +84,7 @@ main() {
         bed_prefix="bed_file_${i}"
         bcftools norm -m- "${vcf_files[$i]}" -o norm.vcf.gz
         plink2 --vcf norm.vcf.gz --make-bed --out "${bed_prefix}"
-        echo "$bed_prefix.bed" >> bed_file_list
+        { echo "$bed_prefix.bed"; echo "$bed_prefix.bim"; echo "$bed_prefix.fam"; } >> bed_file_list
     done
 
     # Concat BED files into single BED file
