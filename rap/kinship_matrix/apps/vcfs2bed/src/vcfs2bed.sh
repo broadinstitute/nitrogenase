@@ -91,6 +91,8 @@ main() {
 
     if [ ${#vcf_files[@]} -eq 1 ]; then
         mv bed_file_0.bed bed
+        mv bed_file_0.bim bim
+        mv bed_file_0.fam fam
     else
         plink2 --pmerge-list bed_file_list bfile --make-bed --out bed
     fi
@@ -102,6 +104,8 @@ main() {
     # to see more options to set metadata.
 
     bed=$(dx upload bed --brief)
+    bim=$(dx upload bim --brief)
+    fam=$(dx upload fam --brief)
 
     # The following line(s) use the utility dx-jobutil-add-output to format and
     # add output variables to your job's output as appropriate for the output
@@ -109,4 +113,6 @@ main() {
     # does.
 
     dx-jobutil-add-output bed "$bed" --class=file
+    dx-jobutil-add-output bim "$bim" --class=file
+    dx-jobutil-add-output fam "$fam" --class=file
 }

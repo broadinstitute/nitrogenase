@@ -25,6 +25,24 @@
         "*"
       ],
       "help": ""
+    },
+    {
+      "name": "bim",
+      "label": "BIM",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "fam",
+      "label": "FAM",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
     }
   ],
   "runSpec": {

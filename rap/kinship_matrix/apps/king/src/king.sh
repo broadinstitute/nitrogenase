@@ -26,7 +26,9 @@ main() {
     # recover the original filenames, you can use the output of "dx describe
     # "$variable" --name".
 
-    dx download "$bed" -o bed
+    dx download "$bed" -o input.bed
+    dx download "$bim" -o input.bim
+    dx download "$fam" -o input.fam
 
     # Fill in your application code here.
     #
@@ -59,7 +61,7 @@ main() {
 
     # Run KING
 
-    king -b bed --ibdseg --degree 4 --cpus 4 --prefix royal
+    king -b input.bed --ibdseg --degree 4 --cpus 4 --prefix royal
 
     ls -l royal*
 
