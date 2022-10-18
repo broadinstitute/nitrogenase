@@ -59,7 +59,7 @@ main() {
 
     # Run KING
 
-    king -b all.bed --ibdseg --degree 4 --cpus 4 --prefix royal
+    king -b bed --ibdseg --degree 4 --cpus 4 --prefix royal
 
     ls -l royal*
 
