@@ -90,11 +90,11 @@ main() {
     # Concat BED files into single BED file
 
     if [ ${#vcf_files[@]} -eq 1 ]; then
-        mv bed_file_0.bed bed
-        mv bed_file_0.bim bim
-        mv bed_file_0.fam fam
+        mv bed_file_0.bed output.bed
+        mv bed_file_0.bim output.bim
+        mv bed_file_0.fam output.fam
     else
-        plink2 --pmerge-list bed_file_list bfile --make-bed --out bed
+        plink2 --pmerge-list bed_file_list bfile --make-bed --out output
     fi
 
     # The following line(s) use the dx command-line tool to upload your file
@@ -103,9 +103,9 @@ main() {
     # but you can change that behavior to suit your needs.  Run "dx upload -h"
     # to see more options to set metadata.
 
-    bed=$(dx upload bed --brief)
-    bim=$(dx upload bim --brief)
-    fam=$(dx upload fam --brief)
+    bed=$(dx upload output.bed --brief)
+    bim=$(dx upload output.bim --brief)
+    fam=$(dx upload output.fam --brief)
 
     # The following line(s) use the utility dx-jobutil-add-output to format and
     # add output variables to your job's output as appropriate for the output
