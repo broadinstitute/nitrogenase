@@ -1,0 +1,102 @@
+{
+  "name": "prune",
+  "title": "prune",
+  "summary": "Prunes BED files",
+  "dxapi": "1.0.0",
+  "version": "0.0.1",
+  "inputSpec": [
+    {
+      "name": "bed",
+      "label": "BED",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "bim",
+      "label": "BIM",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "fam",
+      "label": "FAM",
+      "class": "file",
+      "optional": false,
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "out_prefix",
+      "label": "Output prefix",
+      "class": "string",
+      "optional": true,
+      "default": "pruned",
+      "help": ""
+    }
+  ],
+  "outputSpec": [
+    {
+      "name": "out_bed",
+      "label": "BED",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "out_bim",
+      "label": "BIM",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "out_fam",
+      "label": "FAM",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    }
+  ],
+  "runSpec": {
+    "timeoutPolicy": {
+      "*": {
+        "days": 10
+      }
+    },
+    "interpreter": "bash",
+    "file": "src/prune.sh",
+    "distribution": "Ubuntu",
+    "release": "20.04",
+    "version": "0"
+  },
+  "access": {
+    "network": [
+      "*"
+    ]
+  },
+  "regionalOptions": {
+    "aws:eu-west-2": {
+      "systemRequirements": {
+        "*": {
+          "instanceType": "mem1_ssd1_v2_x4"
+        }
+      }
+    }
+  }
+}
