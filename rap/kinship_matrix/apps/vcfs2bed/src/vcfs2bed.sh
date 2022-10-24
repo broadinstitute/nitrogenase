@@ -84,7 +84,7 @@ main() {
     for i in ${!vcf_files[@]}
     do
         bed_prefix="bed_file_${i}"
-        bcftools norm -m- "${vcf_files[$i]}" -o norm.vcf.gz
+        bcftools norm -m+ "${vcf_files[$i]}" -o norm.vcf.gz
         plink2 --vcf norm.vcf.gz --make-bed --out "${bed_prefix}"
         echo "$bed_prefix" >> bed_file_list
     done
@@ -96,7 +96,7 @@ main() {
         mv bed_file_0.bim "$out_prefix".bim
         mv bed_file_0.fam "$out_prefix".fam
     else
-        plink2 --pmerge-list bed_file_list bfile --make-bed --out "$out_prefix"
+        plink2 --pmerge-list bed_file_list bfile --multiallelics-already-joined --make-bed --out "$out_prefix"
     fi
 
     # The following line(s) use the dx command-line tool to upload your file
