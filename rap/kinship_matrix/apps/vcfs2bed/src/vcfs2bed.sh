@@ -20,6 +20,8 @@ main() {
     set -e -x -v -u
 
     echo "Value of vcfs: '${vcfs[@]}'"
+    echo "Value of out_prefix: '$out_prefix'"
+
 
     # The following line(s) use the dx command-line tool to download your file
     # inputs to the local file system using variable names for the filenames. To
@@ -90,11 +92,11 @@ main() {
     # Concat BED files into single BED file
 
     if [ ${#vcf_files[@]} -eq 1 ]; then
-        mv bed_file_0.bed output.bed
-        mv bed_file_0.bim output.bim
-        mv bed_file_0.fam output.fam
+        mv bed_file_0.bed "$out_prefix".bed
+        mv bed_file_0.bim "$out_prefix".bim
+        mv bed_file_0.fam "$out_prefix".fam
     else
-        plink2 --pmerge-list bed_file_list bfile --make-bed --out output
+        plink2 --pmerge-list bed_file_list bfile --make-bed --out "$out_prefix"
     fi
 
     # The following line(s) use the dx command-line tool to upload your file
@@ -103,9 +105,9 @@ main() {
     # but you can change that behavior to suit your needs.  Run "dx upload -h"
     # to see more options to set metadata.
 
-    bed=$(dx upload output.bed --brief)
-    bim=$(dx upload output.bim --brief)
-    fam=$(dx upload output.fam --brief)
+    bed=$(dx upload "$out_prefix".bed --brief)
+    bim=$(dx upload "$out_prefix".bim --brief)
+    fam=$(dx upload "$out_prefix".fam --brief)
 
     # The following line(s) use the utility dx-jobutil-add-output to format and
     # add output variables to your job's output as appropriate for the output

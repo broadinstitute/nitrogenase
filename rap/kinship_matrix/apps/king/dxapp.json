@@ -34,12 +34,20 @@
         "*"
       ],
       "help": ""
+    },
+    {
+      "name": "out_prefix",
+      "label": "Output prefix",
+      "class": "string",
+      "optional": true,
+      "default": "king_out",
+      "help": ""
     }
   ],
   "outputSpec": [
     {
-      "name": "segs",
-      "label": "segs",
+      "name": "seg",
+      "label": "SEG",
       "class": "file",
       "patterns": [
         "*"

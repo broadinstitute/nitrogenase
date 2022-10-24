@@ -20,6 +20,10 @@ main() {
     set -e -x -v -u
 
     echo "Value of bed: '$bed'"
+    echo "Value of bim: '$bim'"
+    echo "Value of fam: '$fam'"
+    echo "Value of out_prefix: '$out_prefix'"
+
 
     # The following line(s) use the dx command-line tool to download your file
     # inputs to the local file system using variable names for the filenames. To
@@ -61,7 +65,7 @@ main() {
 
     # Run KING
 
-    king -b input.bed --ibdseg --degree 4 --cpus 4 --prefix royal
+    king -b input.bed --ibdseg --degree 4 --cpus 4 --prefix "$out_prefix"
 
     ls -ralt
 
@@ -71,12 +75,12 @@ main() {
     # but you can change that behavior to suit your needs.  Run "dx upload -h"
     # to see more options to set metadata.
 
-    segs=$(dx upload royal.segs --brief)
+    seg=$(dx upload "$out_prefix".seg --brief)
 
     # The following line(s) use the utility dx-jobutil-add-output to format and
     # add output variables to your job's output as appropriate for the output
     # class.  Run "dx-jobutil-add-output -h" for more information on what it
     # does.
 
-    dx-jobutil-add-output segs "$segs" --class=file
+    dx-jobutil-add-output seg "$seg" --class=file
 }
