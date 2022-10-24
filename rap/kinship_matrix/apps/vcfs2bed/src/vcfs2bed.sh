@@ -84,8 +84,7 @@ main() {
     for i in ${!vcf_files[@]}
     do
         bed_prefix="bed_file_${i}"
-        bcftools norm -m+ "${vcf_files[$i]}" -o norm.vcf.gz
-        plink2 --vcf norm.vcf.gz --make-bed --out "${bed_prefix}"
+        plink2 --vcf "${vcf_files[$i]}" --max-alleles 2 --make-bed --out "${bed_prefix}"
         echo "$bed_prefix" >> bed_file_list
     done
 
