@@ -55,19 +55,6 @@ main() {
     apt -y update
     apt -y upgrade
 
-    # Install bcftools
-
-    mkdir bcftools
-    cd bcftools
-    wget https://github.com/samtools/bcftools/releases/download/1.16/bcftools-1.16.tar.bz2
-    tar xvf bcftools-1.16.tar.bz2
-    cd bcftools-1.16
-    ./configure --prefix=/usr/local/
-    make
-    make install
-    cd ../..
-    rm -r bcftools
-
     # Install plink2
 
     mkdir plink
@@ -84,12 +71,12 @@ main() {
     for i in "${!vcf_files[@]}"
     do
         vcf_file="${vcf_files[$i]}"
-        if [ 0 -eq "$(zcat "$vcf_file" | grep -c -v "#")" ]
+        if [ 0 -eq "$(zcat "$vcf_file" | grep -v "#" | head | wc -l)" ]
         then
             echo "$vcf_file has no variants and will be skipped."
         else
             bed_prefix="bed_file_${i}"
-            plink2 --vcf "$vcf_file" --max-alleles 2 --make-bed --out "${bed_prefix}"
+            plink2 --debug --vcf "$vcf_file" --max-alleles 2 --make-bed --out "${bed_prefix}"
             echo "$bed_prefix" >> bed_file_list
         fi
     done
@@ -102,7 +89,7 @@ main() {
         mv bed_file_0.bim "$out_prefix".bim
         mv bed_file_0.fam "$out_prefix".fam
     else
-        plink2 --pmerge-list bed_file_list bfile --multiallelics-already-joined --make-bed --out "$out_prefix"
+        plink2 --debug --pmerge-list bed_file_list bfile --multiallelics-already-joined --make-bed --out "$out_prefix"
     fi
 
     # The following line(s) use the dx command-line tool to upload your file
