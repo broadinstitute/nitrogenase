@@ -55,6 +55,15 @@
         "*"
       ],
       "help": ""
+    },
+    {
+      "name": "rout",
+      "label": "ROUT",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
     }
   ],
   "runSpec": {

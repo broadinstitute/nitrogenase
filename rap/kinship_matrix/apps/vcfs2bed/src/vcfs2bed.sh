@@ -75,9 +75,11 @@ main() {
         then
             echo "$vcf_file has no variants and will be skipped."
         else
+            echo "Now converting $vcf_file"
             bed_prefix="bed_file_${i}"
-            plink2 --debug --vcf "$vcf_file" --max-alleles 2 --make-bed --out "${bed_prefix}"
+            plink2 --debug --vcf "$vcf_file" --max-alleles 2 --maf 0.05 --make-bed --out "${bed_prefix}"
             echo "$bed_prefix" >> bed_file_list
+            echo "Converted $vcf_file to $bed_prefix.bed etc."
         fi
     done
 

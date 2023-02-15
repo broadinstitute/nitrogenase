@@ -1,13 +1,13 @@
 {
-  "name": "king",
-  "title": "KING",
-  "summary": "Run KING to get segs",
+  "name": "tabix",
+  "title": "tabix region",
+  "summary": "Get a region using tabix",
   "dxapi": "1.0.0",
   "version": "0.0.1",
   "inputSpec": [
     {
-      "name": "bed",
-      "label": "BED",
+      "name": "data",
+      "label": "data",
       "class": "file",
       "optional": false,
       "patterns": [
@@ -16,8 +16,8 @@
       "help": ""
     },
     {
-      "name": "bim",
-      "label": "BIM",
+      "name": "index",
+      "label": "index",
       "class": "file",
       "optional": false,
       "patterns": [
@@ -26,37 +26,17 @@
       "help": ""
     },
     {
-      "name": "fam",
-      "label": "FAM",
-      "class": "file",
-      "optional": false,
-      "patterns": [
-        "*"
-      ],
-      "help": ""
-    },
-    {
-      "name": "out_prefix",
-      "label": "Output prefix",
+      "name": "region",
+      "label": "region",
       "class": "string",
-      "optional": true,
-      "default": "king_out",
+      "optional": false,
       "help": ""
     }
   ],
   "outputSpec": [
     {
-      "name": "splitped",
-      "label": "splitped",
-      "class": "file",
-      "patterns": [
-        "*"
-      ],
-      "help": ""
-    },
-    {
-      "name": "allsegs",
-      "label": "allsegs",
+      "name": "extracted",
+      "label": "extrated",
       "class": "file",
       "patterns": [
         "*"
@@ -67,19 +47,14 @@
   "runSpec": {
     "timeoutPolicy": {
       "*": {
-        "days": 30
+        "hours": 48
       }
     },
     "interpreter": "bash",
-    "file": "src/king.sh",
+    "file": "src/tabix.sh",
     "distribution": "Ubuntu",
     "release": "20.04",
     "version": "0"
-  },
-  "access": {
-    "network": [
-      "*"
-    ]
   },
   "regionalOptions": {
     "aws:eu-west-2": {

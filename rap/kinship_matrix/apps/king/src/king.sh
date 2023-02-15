@@ -75,12 +75,14 @@ main() {
     # but you can change that behavior to suit your needs.  Run "dx upload -h"
     # to see more options to set metadata.
 
-    seg=$(dx upload "$out_prefix".seg --brief)
+    splitped=$(dx upload "$out_prefix"splitped.txt --brief)
+    allsegs=$(dx upload "$out_prefix"allsegs.txt --brief)
 
     # The following line(s) use the utility dx-jobutil-add-output to format and
     # add output variables to your job's output as appropriate for the output
     # class.  Run "dx-jobutil-add-output -h" for more information on what it
     # does.
 
-    dx-jobutil-add-output seg "$seg" --class=file
+    dx-jobutil-add-output splitped "$splitped" --class=file
+    dx-jobutil-add-output allsegs "$allsegs" --class=file
 }
