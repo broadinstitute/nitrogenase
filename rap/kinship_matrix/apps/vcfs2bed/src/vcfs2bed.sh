@@ -59,8 +59,8 @@ main() {
 
     mkdir plink
     cd plink
-    wget https://s3.amazonaws.com/plink2-assets/alpha3/plink2_linux_x86_64_20220814.zip
-    unzip plink2_linux_x86_64_20220814.zip
+    wget https://s3.amazonaws.com/plink2-assets/alpha3/plink2_linux_x86_64_20221024.zip
+    unzip plink2_linux_x86_64_20221024.zip
     ls -ralt
     mv plink2 /usr/local/bin/
     cd ..
