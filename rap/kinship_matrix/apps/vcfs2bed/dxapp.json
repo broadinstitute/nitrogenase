@@ -51,6 +51,15 @@
         "*"
       ],
       "help": ""
+    },
+    {
+      "name": "log",
+      "label": "LOG",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
     }
   ],
   "runSpec": {

@@ -17,7 +17,7 @@
 
 main() {
 
-    set -e -x -v -u
+#    set -e -x -v -u
 
     echo "Value of vcfs: '${vcfs[@]}'"
     echo "Value of out_prefix: '$out_prefix'"
@@ -61,7 +61,7 @@ main() {
     cd plink
     wget https://s3.amazonaws.com/plink2-assets/alpha3/plink2_linux_x86_64_20221024.zip
     unzip plink2_linux_x86_64_20221024.zip
-    ls -ralt
+    ls -ralth
     mv plink2 /usr/local/bin/
     cd ..
     rm -r plink
@@ -94,12 +94,15 @@ main() {
         plink2 --debug --pmerge-list bed_file_list bfile --multiallelics-already-joined --make-bed --out "$out_prefix"
     fi
 
+    ls -ralth
+
     # The following line(s) use the dx command-line tool to upload your file
     # outputs after you have created them on the local file system.  It assumes
     # that you have used the output field name for the filename for each output,
     # but you can change that behavior to suit your needs.  Run "dx upload -h"
     # to see more options to set metadata.
 
+    log=$(dx upload "$out_prefix".log --brief)
     bed=$(dx upload "$out_prefix".bed --brief)
     bim=$(dx upload "$out_prefix".bim --brief)
     fam=$(dx upload "$out_prefix".fam --brief)
@@ -109,6 +112,7 @@ main() {
     # class.  Run "dx-jobutil-add-output -h" for more information on what it
     # does.
 
+    dx-jobutil-add-output log "$log" --class=file
     dx-jobutil-add-output bed "$bed" --class=file
     dx-jobutil-add-output bim "$bim" --class=file
     dx-jobutil-add-output fam "$fam" --class=file
