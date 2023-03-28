@@ -17,7 +17,7 @@
 
 main() {
 
-#    set -e -x -v -u
+    set -e -x -v -u
 
     echo "Value of vcfs: '${vcfs[@]}'"
     echo "Value of out_prefix: '$out_prefix'"
@@ -35,7 +35,7 @@ main() {
         vcf_file="input_${i}.vcf.gz"
         dx download "${vcfs[$i]}" -o "$vcf_file"
         vcf_files+=("$vcf_file")
-        ls -l "$vcf_file"
+        ls -lh "$vcf_file"
     done
 
     # Fill in your application code here.
@@ -77,7 +77,14 @@ main() {
         else
             echo "Now converting $vcf_file"
             bed_prefix="bed_file_${i}"
-            plink2 --debug --vcf "$vcf_file" --max-alleles 2 --maf 0.05 --make-bed --out "${bed_prefix}"
+            if ! plink2 --debug --vcf "$vcf_file" --memory 12000 --max-alleles 2 --maf 0.05 --make-bed --out "${bed_prefix}";
+            then
+              ls -ralth
+              echo "plink failed ($?), here is the log"
+              cat "${bed_prefix}.log"
+              echo "That was the log"
+              exit
+            fi
             echo "$bed_prefix" >> bed_file_list
             echo "Converted $vcf_file to $bed_prefix.bed etc."
         fi
@@ -91,7 +98,14 @@ main() {
         mv bed_file_0.bim "$out_prefix".bim
         mv bed_file_0.fam "$out_prefix".fam
     else
-        plink2 --debug --pmerge-list bed_file_list bfile --multiallelics-already-joined --make-bed --out "$out_prefix"
+        if ! plink2 --debug --pmerge-list bed_file_list bfile --memory 12000 --multiallelics-already-joined --make-bed --out "$out_prefix"
+        then
+          ls -ralth
+          echo "Final plink failed ($?), here is the log"
+          cat "${out_prefix}.log"
+          echo "That was the log"
+          exit
+        fi
     fi
 
     ls -ralth
@@ -102,7 +116,6 @@ main() {
     # but you can change that behavior to suit your needs.  Run "dx upload -h"
     # to see more options to set metadata.
 
-    log=$(dx upload "$out_prefix".log --brief)
     bed=$(dx upload "$out_prefix".bed --brief)
     bim=$(dx upload "$out_prefix".bim --brief)
     fam=$(dx upload "$out_prefix".fam --brief)
@@ -112,7 +125,6 @@ main() {
     # class.  Run "dx-jobutil-add-output -h" for more information on what it
     # does.
 
-    dx-jobutil-add-output log "$log" --class=file
     dx-jobutil-add-output bed "$bed" --class=file
     dx-jobutil-add-output bim "$bim" --class=file
     dx-jobutil-add-output fam "$fam" --class=file
