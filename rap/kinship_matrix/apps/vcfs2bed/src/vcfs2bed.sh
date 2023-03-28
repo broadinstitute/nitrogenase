@@ -82,7 +82,10 @@ main() {
               ls -ralth
               echo "plink failed ($?), here is the log"
               cat "${bed_prefix}.log"
-              echo "That was the log"
+              echo "That was the log, now trying suggestion"
+              plink2 --vcf "$vcf_file" --memory 12000 --out pgen_file
+              plink2 --pfile pgen_file --validate
+              echo "Done with suggestion, exiting"
               exit
             fi
             echo "$bed_prefix" >> bed_file_list
