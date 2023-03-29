@@ -59,8 +59,8 @@ main() {
 
     mkdir plink
     cd plink
-    wget https://s3.amazonaws.com/plink2-assets/alpha3/plink2_linux_x86_64_20221024.zip
-    unzip plink2_linux_x86_64_20221024.zip
+    wget https://s3.amazonaws.com/plink2-assets/plink2_linux_x86_64_20230328.zip
+    unzip plink2_linux_x86_64_20230328.zip
     ls -ralth
     mv plink2 /usr/local/bin/
     cd ..
@@ -83,8 +83,8 @@ main() {
               echo "plink failed ($?), here is the log"
               cat "${bed_prefix}.log"
               echo "That was the log, now trying suggestion"
-              plink2 --vcf "$vcf_file" --memory 12000 --out pgen_file
-              plink2 --pfile pgen_file --validate
+              plink2 --vcf "$vcf_file" --debug --memory 12000 --out pgen_file
+              plink2 --pfile pgen_file --debug --validate
               echo "Done with suggestion, exiting"
               exit
             fi
