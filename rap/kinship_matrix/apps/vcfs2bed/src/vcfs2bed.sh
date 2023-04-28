@@ -35,7 +35,7 @@ main() {
         vcf_file="input_${i}.vcf.gz"
         dx download "${vcfs[$i]}" -o "$vcf_file"
         vcf_files+=("$vcf_file")
-        ls -l "$vcf_file"
+        ls -lh "$vcf_file"
     done
 
     # Fill in your application code here.
@@ -59,9 +59,9 @@ main() {
 
     mkdir plink
     cd plink
-    wget https://s3.amazonaws.com/plink2-assets/alpha3/plink2_linux_x86_64_20221024.zip
-    unzip plink2_linux_x86_64_20221024.zip
-    ls -ralt
+    wget https://s3.amazonaws.com/plink2-assets/plink2_linux_x86_64_20230329.zip
+    unzip plink2_linux_x86_64_20230329.zip
+    ls -ralth
     mv plink2 /usr/local/bin/
     cd ..
     rm -r plink
@@ -101,6 +101,8 @@ main() {
         plink2 --debug --pmerge-list bed_file_list bfile --multiallelics-already-joined \
                --make-bed --out "$out_prefix"
     fi
+
+    ls -ralth
 
     # The following line(s) use the dx command-line tool to upload your file
     # outputs after you have created them on the local file system.  It assumes

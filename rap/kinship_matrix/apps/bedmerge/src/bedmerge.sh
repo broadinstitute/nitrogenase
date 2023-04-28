@@ -44,7 +44,12 @@ main() {
         dx download "${beds[$i]}" -o "$in_prefix".bed
         dx download "${bims[$i]}" -o "$in_prefix".bim
         dx download "${fams[$i]}" -o "$in_prefix".fam
-        echo "$in_prefix" >> bed_file_list
+        if [[ -s "$in_prefix".bed && -s "$in_prefix".bim && -s "$in_prefix".fam ]]; then
+          echo "$in_prefix" >> bed_file_list
+        else
+          echo "Warning: there is at least one empty input file."
+          ls -ralth
+        fi
     done
 
     # Fill in your application code here.
