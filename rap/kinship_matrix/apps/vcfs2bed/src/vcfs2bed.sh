@@ -68,6 +68,8 @@ main() {
 
     # Convert each VCF file to BED file
 
+    touch bed_file_list
+
     for i in "${!vcf_files[@]}"
     do
         vcf_file="${vcf_files[$i]}"
@@ -77,7 +79,7 @@ main() {
         else
             echo "Now converting $vcf_file"
             bed_prefix="bed_file_${i}"
-            plink2 --debug --vcf "$vcf_file" --max-alleles 2 --maf 0.05 --make-bed --out "${bed_prefix}"
+            plink2 --debug --memory 12000 --vcf "$vcf_file" --max-alleles 2 --maf 0.05 --make-bed --out "${bed_prefix}"
             echo "$bed_prefix" >> bed_file_list
             echo "Converted $vcf_file to $bed_prefix.bed etc."
         fi
@@ -86,12 +88,18 @@ main() {
     # if [ 0 -eq $(cat vep_input_17f4d75a.vcf | grep -v "#" | wc -l) ]; then echo "true"; else echo "false"; fi
     # Concat BED files into single BED file
 
-    if [ "$( cat bed_file_list | wc -l )" -eq 1 ]; then
+
+    if [ "$( cat bed_file_list | wc -l )" -eq 0 ]; then
+        touch "$out_prefix".bed
+        touch "$out_prefix".bim
+        touch "$out_prefix".fam
+    elif [ "$( cat bed_file_list | wc -l )" -eq 1 ]; then
         mv bed_file_0.bed "$out_prefix".bed
         mv bed_file_0.bim "$out_prefix".bim
         mv bed_file_0.fam "$out_prefix".fam
     else
-        plink2 --debug --pmerge-list bed_file_list bfile --multiallelics-already-joined --make-bed --out "$out_prefix"
+        plink2 --debug --pmerge-list bed_file_list bfile --multiallelics-already-joined \
+               --make-bed --out "$out_prefix"
     fi
 
     # The following line(s) use the dx command-line tool to upload your file
