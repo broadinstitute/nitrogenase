@@ -13,6 +13,7 @@ library(Matrix)
 library(dplyr)
 library(parallel)
 library(arrow)
+library(MetaSTAARpipeline)
 
 options(error=function() { traceback(2); quit(status=19) } )
 
@@ -175,18 +176,6 @@ if(MAF_sub_seq_num > 0)
 
 	for(ii in 1:MAF_sub_seq_num)
 	{
-		if(ii<MAF_sub_seq_num)
-		{
-		   is.in.sub <- ((ii-1)*MAF_sub_snv_num+1):(ii*MAF_sub_snv_num)
-		   invisible(capture.output(seqSetFilter(genofile,variant.id=variant.id.sub[is.in.sub],sample.id=phenotype.id)))
-		}
-
-		if(ii==MAF_sub_seq_num)
-		{
-			is.in.sub <- ((ii-1)*MAF_sub_snv_num+1):length(variant.id.sub)
-			invisible(capture.output(seqSetFilter(genofile,variant.id=variant.id.sub[is.in.sub],sample.id=phenotype.id)))
-		}
-
 		Geno <- seqGetData(genofile, "$dosage")
 		Geno <- Geno[id.genotype.match,,drop=FALSE]
 
@@ -227,59 +216,27 @@ if(MAF_sub_seq_num > 0)
 	variant.id.sub.rare <- variant.id.sub[RV_label]
 	AF <- AF[RV_label]
 	variant_pos <- variant_pos[RV_label]
-
-	### Genotype
-	RV_sub_num <- 5000
-	RV_sub_seq_num <- ceiling(length(AF)/RV_sub_num)
-	logDebug("RV_sub_seq_num", RV_sub_seq_num)
-
-	for(jj in 1:RV_sub_seq_num)
-	{
-		if(jj<RV_sub_seq_num)
-		{
-			is.in.sub.rare <- ((jj-1)*RV_sub_num+1):(jj*RV_sub_num)
-			invisible(capture.output(seqSetFilter(genofile,variant.id=variant.id.sub.rare[is.in.sub.rare],sample.id=phenotype.id)))
-
-			AF_sub <- AF[is.in.sub.rare]
-		}else if(jj==RV_sub_seq_num)
-		{
-			is.in.sub.rare <- ((jj-1)*RV_sub_num+1):length(variant.id.sub.rare)
-			invisible(capture.output(seqSetFilter(genofile,variant.id=variant.id.sub.rare[is.in.sub.rare],sample.id=phenotype.id)))
-
-			AF_sub <- AF[is.in.sub.rare]
-		}else
-		{
-			break
-		}
-
-		## Genotype
-		Geno_sub <- seqGetData(genofile, "$dosage")
-		Geno_sub <- Geno_sub[id.genotype.match,,drop=FALSE]
-
-		## flip
-		if(sum(AF_sub>0.5)>0)
-		{
-			Geno_sub[,AF_sub>0.5] <- 2 - Geno_sub[,AF_sub>0.5]
-		}
-
-		Geno_sub <- as(Geno_sub,"dgCMatrix")
-		genotype <- cbind(genotype,Geno_sub)
-
-		rm(Geno_sub)
-		gc()
-
-		invisible(capture.output(seqResetFilter(genofile)))
-	}
 }
 
-logDebug("genotype", genotype)
-if(is.null(genotype)) {
-	print("Genotype is NULL - assuming no selected variants in this segment.")
-	quit(status=0)
-}
 GTSinvG_rare <- NULL
-GTSinvG_rare <- MetaSTAAR_worker_cov(genotype, obj_nullmodel = nullobj, cov_maf_cutoff = cov_maf_cutoff, variant_pos,
-										 region_midpos, segment.size)
+# GTSinvG_rare <- MetaSTAAR_worker_cov(genotype, obj_nullmodel = nullobj, cov_maf_cutoff = cov_maf_cutoff, variant_pos,
+# 										 region_midpos, segment.size)
+
+GTSinvG_rare <- generate_MetaSTAAR_cov(chrom, gds_file, nullobj, cov_maf_cutoff, segment.size, i)
+	# generate_MetaSTAAR_cov(
+	# 	chr,
+	# 	genofile,
+	# 	obj_nullmodel,
+	# 	cov_maf_cutoff = 0.05,
+	# 	segment.size = 5e+05,
+	# 	segment.id,
+	# 	signif.digits = 3,
+	# 	MAF_sub_variant_num = 5000,
+	# 	QC_label = "annotation/filter",
+	# 	check_qc_label = FALSE,
+	# 	variant_type = c("SNV", "Indel", "variant"),
+	# 	silent = FALSE
+	# )
 
 # This function can be used to write out the sparse component of the MetaSTAAR covariant matrix.
 # It corresponds to the save(GTSinvG_rare,...) part of the script that writes out covariance.

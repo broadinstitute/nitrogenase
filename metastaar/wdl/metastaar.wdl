@@ -50,6 +50,7 @@ workflow metastaar {
 
 task calculate_summary_stats {
     input {
+        String chrom
         Int segment
         File null_model_file
         File genotypes_file
@@ -66,7 +67,7 @@ task calculate_summary_stats {
     command <<<
         set -e
         echo "Now calculating summary statistics"
-        Rscript --verbose /r/MetaSTAAR_Worker_Score_Generation.R --i ~{segment}  \
+        Rscript --verbose /r/MetaSTAAR_Worker_Score_Generation.R --chrom ~{chrom} --i ~{segment}  \
           --gds ~{genotypes_file} --null-model ~{null_model_file}  --out ~{output_file_name}  \
         --output-format ~{output_format}
         if [ ! -f "~{output_file_name}" ]; then
@@ -82,6 +83,7 @@ task calculate_summary_stats {
 
 task calculate_covariances {
     input {
+        String chrom
         Int segment
         Float maf_cutoff
         File null_model_file
@@ -99,7 +101,7 @@ task calculate_covariances {
     command <<<
         set -e
         echo "Now calculating covariances"
-        Rscript --verbose /r/MetaSTAAR_Worker_Cov_Generation.R --i ~{segment}  \
+        Rscript --verbose /r/MetaSTAAR_Worker_Cov_Generation.R --chrom ~{chrom} --i ~{segment}  \
           --gds ~{genotypes_file} --null-model ~{null_model_file}  --out ~{output_file_name}  \
           --maf-cutoff ~{maf_cutoff} --output-format ~{output_format}
         if [ ! -f "~{output_file_name}" ]; then
