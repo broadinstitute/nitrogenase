@@ -9,7 +9,7 @@ RUN echo "install.packages(c(\"Rcpp\", \"dplyr\", \"Matrix\", \"MASS\", \"arrow\
           > install_from_cran.R  && \
     cat install_from_cran.R  && \
     Rscript install_from_cran.R  && \
-    rm install_from_cran.R \
+    rm install_from_cran.R
 
 RUN echo "if (!require(\"BiocManager\", quietly = TRUE))" >> install_from_bioconductor.R  && \
     echo "    install.packages(\"BiocManager\")" >> install_from_bioconductor.R  && \
@@ -19,7 +19,7 @@ RUN echo "if (!require(\"BiocManager\", quietly = TRUE))" >> install_from_biocon
     echo "BiocManager::install(\"TxDb.Hsapiens.UCSC.hg38.knownGene\")" >> install_from_bioconductor.R  && \
     cat install_from_bioconductor.R  && \
     Rscript install_from_bioconductor.R  && \
-    rm install_from_bioconductor.R \
+    rm install_from_bioconductor.R
 
 RUN echo "library(devtools)" > install_from_github.R  && \
     echo "devtools::install_github(\"xihaoli/STAAR\")" >> install_from_github.R  && \
