@@ -2,7 +2,7 @@ FROM ubuntu:23.04
 
 RUN apt-get -y update  && \
     apt-get -y upgrade && \
-    apt -y install r-base libcurl-dev libssl-dev libxml2
+    apt -y install r-base libcurl4-openssl-dev libssl-dev libxml2
 
 RUN echo "install.packages(c(\"Rcpp\", \"dplyr\", \"Matrix\", \"MASS\", \"arrow\", \"optparse\", \"stringr\", \
          \"devtools\"), repos=\"http://lib.stat.cmu.edu/R/CRAN/\")" \
