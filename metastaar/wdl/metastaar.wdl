@@ -29,6 +29,7 @@ workflow metastaar {
             String output_file_name_cov = output_file_prefix_cov + chrom_seg_part + output_format
             call calculate_summary_stats {
                 input:
+                    chrom = chromosome,
                     segment = segment,
                     null_model_file = null_model_file,
                     genotypes_file = genotypes_file,
@@ -37,6 +38,7 @@ workflow metastaar {
             }
             call calculate_covariances {
                 input:
+                    chrom = chromosome,
                     segment = segment,
                     maf_cutoff = covariances_maf_cutoff,
                     null_model_file = null_model_file,

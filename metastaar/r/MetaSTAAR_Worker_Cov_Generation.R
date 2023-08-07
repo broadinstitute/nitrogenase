@@ -85,6 +85,7 @@ pickFloatArg <- function(option, args) {
 	return(arg_as_numeric)
 }
 
+chr <- pickArg("--chrom", args)
 i <- pickIntegerArg("--i", args)
 gds_file <- pickArg("--gds", args)
 null_model_file <- pickArg("--null-model", args)
@@ -112,11 +113,6 @@ gds.path <- gds_file
 genofile <- seqOpen(gds.path)
 logDebug("genofile", genofile)
 
-## get SNV id
-filter <- seqGetData(genofile, "annotation/filter")
-AVGDP <- seqGetData(genofile, "annotation/info/AVGDP")
-SNVlist <- filter == "PASS" & AVGDP > 10 & isSNV(genofile)
-rm(filter,AVGDP)
 gc()
 
 variant.id <- seqGetData(genofile, "variant.id")
@@ -144,85 +140,13 @@ region_end_loc <- (i+1) * segment.size
 phenotype.id <- as.character(nullobj$id_include)
 logDebug("phenotype.id", phenotype.id)
 
-is.in <- (SNVlist)&(position>=region_start_loc)&(position<=region_end_loc)
-variant_pos <- position[is.in]
 seqSetFilter(genofile,variant.id=variant.id[is.in],sample.id=phenotype.id)
-
-## genotype id
-id.genotype <- seqGetData(genofile,"sample.id")
-logDebug("id.genotype", id.genotype)
-
-id.genotype.merge <- data.frame(id.genotype,index=seq(1,length(id.genotype)))
-phenotype.id.merge <- data.frame(phenotype.id)
-phenotype.id.merge <- dplyr::left_join(phenotype.id.merge,id.genotype.merge,by=c("phenotype.id"="id.genotype"))
-id.genotype.match <- phenotype.id.merge$index
 
 ########################################################
 #                 Calculate MAF
 ########################################################
 
-variant.id.sub <- seqGetData(genofile, "variant.id")
-logDebug("variant.id.sub", variant.id.sub)
-### number of variants in each subsequence
-MAF_sub_snv_num <- 5000
-MAF_sub_seq_num <- ceiling(length(variant.id.sub)/MAF_sub_snv_num)
-logDebug("MAF_sub_seq_num", MAF_sub_seq_num)
-
-genotype <- NULL
-
-if(MAF_sub_seq_num > 0)
-{
-	AF <- NULL
-
-	for(ii in 1:MAF_sub_seq_num)
-	{
-		Geno <- seqGetData(genofile, "$dosage")
-		Geno <- Geno[id.genotype.match,,drop=FALSE]
-
-		AF_sub <- apply(Geno,2,mean)/2
-		AF <- c(AF,AF_sub)
-
-		rm(Geno)
-		gc()
-
-		invisible(capture.output(seqResetFilter(genofile)))
-	}
-	MAF <- pmin(AF,1-AF)
-
-	MAF <- pmin(AF,1-AF)
-
-	print("cov_maf_cutoff")
-	print(cov_maf_cutoff)
-	### rare variant id
-	print("length(MAF)")
-	print(length(MAF))
-	print("min(MAF[MAF>0])")
-	print(min(MAF[MAF>0]))
-	print("sum((MAF>0)&(MAF<1e-04))")
-	print(sum((MAF>0)&(MAF<1e-04)))
-
-	### rare variant id
-	RV_label <- (MAF<cov_maf_cutoff)&(MAF>0)
-
-	print("sum(RV_label)")
-	print(sum(RV_label))
-
-	print("sum((MAF<0.05)&(MAF>0))")
-	print(sum((MAF<0.05)&(MAF>0)))
-
-	print("sum((MAF<cov_maf_cutoff)&(MAF>1e-10))")
-	print(sum((MAF<cov_maf_cutoff)&(MAF>1e-10)))
-
-	variant.id.sub.rare <- variant.id.sub[RV_label]
-	AF <- AF[RV_label]
-	variant_pos <- variant_pos[RV_label]
-}
-
-GTSinvG_rare <- NULL
-# GTSinvG_rare <- MetaSTAAR_worker_cov(genotype, obj_nullmodel = nullobj, cov_maf_cutoff = cov_maf_cutoff, variant_pos,
-# 										 region_midpos, segment.size)
-
-GTSinvG_rare <- generate_MetaSTAAR_cov(chrom, gds_file, nullobj, cov_maf_cutoff, segment.size, i)
+GTSinvG_rare <- MetaSTAARpipeline::generate_MetaSTAAR_cov(chr, genofile, nullobj, cov_maf_cutoff, segment.size, i)
 	# generate_MetaSTAAR_cov(
 	# 	chr,
 	# 	genofile,
@@ -309,8 +233,6 @@ if(output_format == "parquet") {
 		output_file,
 		list(
 			chrom = head(chrom, 1),
-			pos_start = min(variant_pos),
-			pos_end = max(variant_pos),
 			pos_mid = region_midpos,
 			region_start = region_start_loc,
 			region_mid = region_midpos,
@@ -324,7 +246,7 @@ if(output_format == "parquet") {
 
 seqResetFilter(genofile)
 
-rm(genotype,GTSinvG_rare)
+rm(GTSinvG_rare)
 gc()
 seqClose(genofile)
 	 

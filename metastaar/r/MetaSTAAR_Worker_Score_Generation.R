@@ -13,6 +13,7 @@ library(Matrix)
 library(dplyr)
 library(parallel)
 library(arrow)
+library(MetaStAARpipeline)
 
 options(stringsAsFactors = FALSE)
 options(error=function() { traceback(2); quit(status=19) } )
@@ -126,6 +127,7 @@ write_sumstat_parquet <- function(df, path, metadata=NULL) {
 	)
 }
 
+chr <- pickArg("--chrom", args)
 i <- pickIntegerArg("--i", args)
 gds_file <- pickArg("--gds", args)
 null_model_file <- pickArg("--null-model", args)
@@ -142,7 +144,6 @@ if(!(output_format == "Rdata" || output_format == "parquet")) {
 
 ##### load Null model
 nullobj <- get(load(null_model_file))
-logDebug("nullobj", nullobj)
 
 ######################################################
 #                 Main Step
@@ -151,94 +152,21 @@ logDebug("nullobj", nullobj)
 
 gds.path <- gds_file
 genofile <- seqOpen(gds.path)
-logDebug("genofile", genofile)
-
-## get SNV id
-filter <- seqGetData(genofile, "annotation/filter")
-AVGDP <- seqGetData(genofile, "annotation/info/AVGDP")
-SNVlist <- filter == "PASS" & AVGDP > 10 & isSNV(genofile)
-rm(filter,AVGDP)
-gc()
-
-variant.id <- seqGetData(genofile, "variant.id")
-logDebug("variant.id (initially)", variant.id)
-
-## Position
-position <- as.integer(seqGetData(genofile, "position"))
-max_position <- max(position)
-logDebug("max_position", max_position)
 
 segment.size <- 1e5
-segment.num <- ceiling(max_position/segment.size)
-logDebug("segment.num", segment.num)
 
 ###  Generate Summary Stat Score
 
-subsegment_num <- 25
-summary_stat <- NULL
+summary_stat <- MetaSTAARpipeline::generate_MetaSTAAR_sumstat(chr = chr, genofile = genofile, obj_nullmodel = nullobj,
+															      segment.size = segment.size, segment.id = i)
 
-for(j in 1:subsegment_num)
-{
-	### segment location
-	region_start_loc <- (i-1) * segment.size + (j-1) * (segment.size/subsegment_num) + 1
-	region_end_loc <- (i-1) * segment.size + j * (segment.size/subsegment_num)
+# logDebug("summary_stat", summary_stat)
+# logDebug("summary_stat$chr", summary_stat$chr)
+# logDebug("summary_stat$pos", summary_stat$pos)
+# logDebug("summary_stat$ref", summary_stat$ref)
+# logDebug("summary_stat$alt", summary_stat$alt)
 
-	### phenotype id
-	phenotype.id <- as.character(nullobj$id_include)
-	logDebug("phenotype.id", phenotype.id)
-
-	is.in <- (SNVlist)&(position>=region_start_loc)&(position<=region_end_loc)
-	seqSetFilter(genofile,variant.id=variant.id[is.in],sample.id=phenotype.id)
-
-	chr <- as.character(seqGetData(genofile, "chromosome"))
-	pos <- as.integer(seqGetData(genofile, "position"))
-	ref <- unlist(lapply(strsplit(seqGetData(genofile, "allele"),","),`[[`,1))
-	alt <- unlist(lapply(strsplit(seqGetData(genofile, "allele"),","),`[[`,2))
-
-	logDebug("chr", chr)
-	logDebug("pos", pos)
-	logDebug("ref", ref)
-	logDebug("alt", alt)
-
-	## genotype id
-	id.genotype <- seqGetData(genofile,"sample.id")
-
-	id.genotype.merge <- data.frame(id.genotype,index=seq(1,length(id.genotype)))
-	phenotype.id.merge <- data.frame(phenotype.id)
-	phenotype.id.merge <- dplyr::left_join(phenotype.id.merge,id.genotype.merge,by=c("phenotype.id"="id.genotype"))
-	id.genotype.match <- phenotype.id.merge$index
-
-	##### Filtering all variants
-	genotype <- seqGetData(genofile, "$dosage")
-	genotype <- genotype[id.genotype.match,,drop=FALSE]
-	logDebug("genotype", genotype)
-
-	if(!is.null(genotype)) {
-		variant_info <- data.frame(chr,pos,ref,alt)
-
-		logDebug("variant_info", variant_info)
-
-		results_temp <- NULL
-		results_temp <- MetaSTAAR_worker_sumstat(genotype,nullobj,variant_info)
-		logDebug("results_temp", results_temp)
-		summary_stat <- rbind(summary_stat,results_temp)
-	} else {
-		print("genotype is NULL - assuming no selected variants in this segment.")
-		quit(status=0)
-	}
-}
-
-## save results
-logDebug("summary_stat", summary_stat)
-logDebug("summary_stat$chr", summary_stat$chr)
-print("Turning summary_stat$chr to character")
-summary_stat$chr <- as.character(summary_stat$chr)
-logDebug("summary_stat", summary_stat)
-logDebug("summary_stat$chr", summary_stat$chr)
-logDebug("summary_stat$pos", summary_stat$pos)
-logDebug("summary_stat$ref", summary_stat$ref)
-logDebug("summary_stat$alt", summary_stat$alt)
-if(output_format == "parquet") {
+   if(output_format == "parquet") {
 	write_sumstat_parquet(
 		summary_stat,
 		output_file,
@@ -259,7 +187,7 @@ if(output_format == "parquet") {
 
 seqResetFilter(genofile)
 
-rm(genotype,results_temp,pos,ref,alt,variant_info,summary_stat)
+rm(results_temp,pos,ref,alt,variant_info,summary_stat)
 gc()
 
 seqClose(genofile)
