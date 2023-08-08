@@ -15,6 +15,7 @@ RUN echo "install.packages(c(\"Rcpp\", \"dplyr\", \"Matrix\", \"MASS\", \"arrow\
 RUN echo "if (!require(\"BiocManager\", quietly = TRUE))" >> install_from_bioconductor.R  && \
     echo "    install.packages(\"BiocManager\")" >> install_from_bioconductor.R  && \
     echo "BiocManager::install(\"SeqArray\")" >> install_from_bioconductor.R  && \
+    echo "BiocManager::install(\"GENESIS\")" >> install_from_bioconductor.R  && \
     echo "BiocManager::install(\"SeqVarTools\")" >> install_from_bioconductor.R  && \
     echo "BiocManager::install(\"GenomicFeatures\")" >> install_from_bioconductor.R  && \
     echo "BiocManager::install(\"TxDb.Hsapiens.UCSC.hg38.knownGene\")" >> install_from_bioconductor.R  && \
