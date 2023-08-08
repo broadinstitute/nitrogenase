@@ -6,7 +6,7 @@ RUN apt-get -y update  && \
                    libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev
 
 RUN echo "install.packages(c(\"Rcpp\", \"dplyr\", \"Matrix\", \"MASS\", \"arrow\", \"optparse\", \"stringr\", \
-         \"devtools\"), repos=\"http://lib.stat.cmu.edu/R/CRAN/\")" \
+         \"devtools\", \"jomo\"), repos=\"http://lib.stat.cmu.edu/R/CRAN/\")" \
           > install_from_cran.R  && \
     cat install_from_cran.R  && \
     Rscript install_from_cran.R  && \
