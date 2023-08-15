@@ -50,7 +50,7 @@ elif [ "$subcommand" == "submit" ]; then
   echo "Cloud-building Docker image:"
   full="gcr.io/${project}/${image}"
   echo "Full tag is '$full'"
-  gcloud builds submit --timeout=60m --project "$project" --tag "$full"
+  gcloud builds submit --timeout=90m --project "$project" --tag "$full"
   echo "Done submitting $full"
 else
   echo "Need to provide subcommand 'about', 'build', 'bash' or 'submit'."
