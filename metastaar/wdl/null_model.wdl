@@ -36,7 +36,7 @@ task calculate_null_model {
         String out_file_name
     }
     runtime {
-        docker: "gcr.io/nitrogenase-docker/nitrogenase-metastaar:1.2.12"
+        docker: "gcr.io/broad-gdr-dig-storage/nitrogenase-metastaar:1.7.0"
         cpu: 1
         memory: "8 GB"
         disks: "local-disk 25 HDD"
