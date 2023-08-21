@@ -1,0 +1,16 @@
+{
+  "metastaar.null_model_file": "gs://fc-4acc7af3-6463-4452-80c1-98c8b6cf95d5/null_model/t2d/null_model.Rdata",
+  "metastaar.covariances_maf_cutoff": 0.05,
+  "metastaar.chromosome_segments_list": [
+    {
+      "chromosome": "1",
+      "genotypes_file": "gs://fc-282d7a75-f309-444a-9e1b-2679f8b67168/F5_aGDS/freeze5b.chr1.subset_fr5.pass_and_fail.gtonly.minDP0.gds",
+      "segs_from": 1,
+      "segs_to": 1
+    }
+  ],
+  "metastaar.output_file_prefix_sum_stats": "summary_statistics",
+  "metastaar.output_file_prefix_cov": "covariances",
+  "metastaar.output_format": "parquet"
+}
+
