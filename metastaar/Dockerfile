@@ -40,9 +40,10 @@ RUN PAT=$(cat pat | xargs)  && \
 
 WORKDIR /r
 
-WORKDIR /
-
 ADD r/STAAR_null_model.R STAAR_null_model.R
 ADD r/MetaSTAAR_Worker_Score_Generation.R MetaSTAAR_Worker_Score_Generation.R
 ADD r/MetaSTAAR_Worker_Cov_Generation.R MetaSTAAR_Worker_Cov_Generation.R
+
+WORKDIR /
+
 
