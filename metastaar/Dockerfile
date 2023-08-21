@@ -38,6 +38,8 @@ RUN PAT=$(cat pat | xargs)  && \
     Rscript install_from_github.R  && \
     rm install_from_github.R
 
+WORKDIR /r
+
 WORKDIR /
 
 ADD r/STAAR_null_model.R STAAR_null_model.R
