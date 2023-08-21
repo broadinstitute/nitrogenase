@@ -13,7 +13,7 @@ library(Matrix)
 library(dplyr)
 library(parallel)
 library(arrow)
-library(MetaStAARpipeline)
+library(MetaSTAARpipeline)
 
 options(stringsAsFactors = FALSE)
 options(error=function() { traceback(2); quit(status=19) } )

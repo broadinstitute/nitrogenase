@@ -140,6 +140,7 @@ region_end_loc <- (i+1) * segment.size
 phenotype.id <- as.character(nullobj$id_include)
 logDebug("phenotype.id", phenotype.id)
 
+is.in <- (SNVlist)&(position>=region_start_loc)&(position<=region_end_loc)
 seqSetFilter(genofile,variant.id=variant.id[is.in],sample.id=phenotype.id)
 
 ########################################################
@@ -166,7 +167,7 @@ GTSinvG_rare <- MetaSTAARpipeline::generate_MetaSTAAR_cov(chr, genofile, nullobj
 # It corresponds to the save(GTSinvG_rare,...) part of the script that writes out covariance.
 write_sparse_parquet <- function(mat, path, metadata=NULL) {
 	if (class(mat) != "dgCMatrix") {
-		stop("Error when writing matrix to sparse parquet: input matrix is not dgCMatrix");
+		stop("Error when writing matrix to sparse parquet: input matrix is not dgCMatrix")
 	}
 
 	# Now we have a matrix in dgCMatrix format, which is CSC (sparse column) format.
