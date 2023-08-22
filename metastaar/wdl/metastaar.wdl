@@ -67,7 +67,6 @@ task calculate_summary_stats {
         disks: "local-disk 20 HDD"
     }
     command <<<
-        set -e
         echo "Now calculating summary statistics"
         Rscript --verbose /r/MetaSTAAR_Worker_Score_Generation.R --chrom ~{chrom} --i ~{segment}  \
           --gds ~{genotypes_file} --null-model ~{null_model_file}  --out ~{output_file_name}  \
@@ -101,7 +100,6 @@ task calculate_covariances {
         disks: "local-disk 20 HDD"
     }
     command <<<
-        set -e
         echo "Now calculating covariances"
         Rscript --verbose /r/MetaSTAAR_Worker_Cov_Generation.R --chrom ~{chrom} --i ~{segment}  \
           --gds ~{genotypes_file} --null-model ~{null_model_file}  --out ~{output_file_name}  \
