@@ -113,6 +113,11 @@ gds.path <- gds_file
 genofile <- seqOpen(gds.path)
 logDebug("genofile", genofile)
 
+## get SNV id
+filter <- seqGetData(genofile, "annotation/filter")
+AVGDP <- seqGetData(genofile, "annotation/info/AVGDP")
+SNVlist <- filter == "PASS" & AVGDP > 10 & isSNV(genofile)
+rm(filter,AVGDP)
 gc()
 
 variant.id <- seqGetData(genofile, "variant.id")
