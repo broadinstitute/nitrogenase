@@ -172,7 +172,9 @@ GTSinvG_rare <- MetaSTAARpipeline::generate_MetaSTAAR_cov(chr, genofile, nullobj
 # It corresponds to the save(GTSinvG_rare,...) part of the script that writes out covariance.
 write_sparse_parquet <- function(mat, path, metadata=NULL) {
 	if (class(mat) != "dgCMatrix") {
-		stop("Error when writing matrix to sparse parquet: input matrix is not dgCMatrix")
+		print("Error when writing matrix to sparse parquet: input matrix is not dgCMatrix.")
+		print("Probably because there are no selected variants in this segment.")
+		quit(save = "no", status = 20, runLast = FALSE)
 	}
 
 	# Now we have a matrix in dgCMatrix format, which is CSC (sparse column) format.

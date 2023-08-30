@@ -68,12 +68,22 @@ task calculate_summary_stats {
     }
     command <<<
         echo "Now calculating summary statistics"
-        Rscript --verbose /r/MetaSTAAR_Worker_Score_Generation.R --chrom ~{chrom} --i ~{segment}  \
-          --gds ~{genotypes_file} --null-model ~{null_model_file}  --out ~{output_file_name}  \
-        --output-format ~{output_format}
-        if [ ! -f "~{output_file_name}" ]; then
-          echo "No output file ~{output_file_name}, creating empty mock file."
-          touch ~{output_file_name}
+        if Rscript --verbose /r/MetaSTAAR_Worker_Score_Generation.R --chrom ~{chrom} --i ~{segment}  \
+            --gds ~{genotypes_file} --null-model ~{null_model_file}  --out ~{output_file_name}  \
+            --output-format ~{output_format}
+        then
+          echo "Seems Rscript ran successfully"
+        else
+          code=$?
+          echo "Rscript exit code is $code"
+          if [[ "$code" -eq 20 ]]
+          then
+            echo "Looks like no variants in this segment. Creating empty output file"
+            touch ~{output_file_name}
+          else
+            echo "Exiting"
+            exit $code
+          fi
         fi
         echo "Done calculating summary statistics"
     >>>
@@ -101,12 +111,22 @@ task calculate_covariances {
     }
     command <<<
         echo "Now calculating covariances"
-        Rscript --verbose /r/MetaSTAAR_Worker_Cov_Generation.R --chrom ~{chrom} --i ~{segment}  \
-          --gds ~{genotypes_file} --null-model ~{null_model_file}  --out ~{output_file_name}  \
-          --maf-cutoff ~{maf_cutoff} --output-format ~{output_format}
-        if [ ! -f "~{output_file_name}" ]; then
-          echo "No output file ~{output_file_name}, creating empty mock file."
-          touch ~{output_file_name}
+        if Rscript --verbose /r/MetaSTAAR_Worker_Cov_Generation.R --chrom ~{chrom} --i ~{segment}  \
+            --gds ~{genotypes_file} --null-model ~{null_model_file}  --out ~{output_file_name}  \
+            --maf-cutoff ~{maf_cutoff} --output-format ~{output_format}
+        then
+          echo "Seems Rscript ran successfully"
+        else
+          code=$?
+          echo "Rscript exit code is $code"
+          if [[ "$code" -eq 20 ]]
+          then
+            echo "Looks like no variants in this segment. Creating empty output file"
+            touch ~{output_file_name}
+          else
+            echo "Exiting"
+            exit $code
+          fi
         fi
         echo "Done calculating covariances"
     >>>
