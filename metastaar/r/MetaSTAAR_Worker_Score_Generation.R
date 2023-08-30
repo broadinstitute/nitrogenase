@@ -97,8 +97,8 @@ write_sumstat_parquet <- function(df, path, metadata=NULL) {
 
 	ncovar = dim(df)[2] - 10
 	logDebug("ncovar", ncovar)
-	if(is.null(ncovar) | ncovar <= 0) {
-		print(paste("ncovar should be at least 1 but is ", valueDebug(ncovar)))
+	if(length(ncovar) < 1) {
+		print(paste("ncovar should not be empty but is ", valueDebug(ncovar)))
 		print("Probably because there are no selected variants in this segment.")
 		quit(save = "no", status = 20, runLast = FALSE)
 	}
