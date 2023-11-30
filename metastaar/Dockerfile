@@ -31,6 +31,7 @@ RUN PAT=$(cat pat | xargs)  && \
     echo "devtools::install_github(\"xihaoli/STAAR\")" >> install_from_github.R  && \
     echo "devtools::install_github(\"xihaoli/MetaSTAAR\",ref=\"main\")" >> install_from_github.R  && \
     echo "devtools::install_github(\"zilinli1988/SCANG\")" >> install_from_github.R  && \
+    echo "devtools::install_github(\"xihaoli/MultiSTAAR\",ref=\"main\")" >> install_from_github.R  && \
     echo "devtools::install_github(\"xihaoli/STAARpipeline\",ref=\"main\")" >> install_from_github.R  && \
     echo "devtools::install_github(\"xihaoli/MetaSTAARpipeline\",ref=\"main\",auth_token=\"$PAT\")" \
       >> install_from_github.R  && \
