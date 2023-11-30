@@ -61,7 +61,7 @@ task calculate_summary_stats {
     }
     runtime {
         preemptible: 3
-        docker: "gcr.io/broad-gdr-dig-storage/nitrogenase-metastaar:1.7.0"
+        docker: "gcr.io/broad-gdr-dig-storage/nitrogenase-metastaar:1.7.1"
         cpu: 1
         memory: "16 GB"
         disks: "local-disk 20 HDD"
@@ -104,7 +104,7 @@ task calculate_covariances {
     }
     runtime {
         preemptible: 3
-        docker: "gcr.io/broad-gdr-dig-storage/nitrogenase-metastaar:1.7.0"
+        docker: "gcr.io/broad-gdr-dig-storage/nitrogenase-metastaar:1.7.1"
         cpu: 1
         memory: "16 GB"
         disks: "local-disk 20 HDD"

@@ -38,8 +38,26 @@
   ],
   "outputSpec": [
     {
-      "name": "row",
-      "label": "row",
+      "name": "ld",
+      "label": "output.ld",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "nosex",
+      "label": "output.nosex",
+      "class": "file",
+      "patterns": [
+        "*"
+      ],
+      "help": ""
+    },
+    {
+      "name": "log",
+      "label": "output.log",
       "class": "file",
       "patterns": [
         "*"

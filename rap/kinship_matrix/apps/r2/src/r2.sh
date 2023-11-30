@@ -72,12 +72,16 @@ main() {
     # but you can change that behavior to suit your needs.  Run "dx upload -h"
     # to see more options to set metadata.
 
-    out=$(dx upload output --brief)
+    ld=$(dx upload output.ld --brief)
+    nosex=$(dx upload output.nosex --brief)
+    log=$(dx upload output.log --brief)
 
     # The following line(s) use the utility dx-jobutil-add-output to format and
     # add output variables to your job's output as appropriate for the output
     # class.  Run "dx-jobutil-add-output -h" for more information on what it
     # does.
 
-    dx-jobutil-add-output row "$out" --class=file
+    dx-jobutil-add-output ld "$ld" --class=file
+    dx-jobutil-add-output nosex "$nosex" --class=file
+    dx-jobutil-add-output log "$log" --class=file
 }
